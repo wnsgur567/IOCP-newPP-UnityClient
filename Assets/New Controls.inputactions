@@ -1,0 +1,45 @@
+{
+    "name": "New Controls",
+    "maps": [
+        {
+            "name": "activate_toggle",
+            "id": "f2c5d088-96b8-45a3-af0d-4fb469e01ac5",
+            "actions": [
+                {
+                    "name": "activate_toggle",
+                    "type": "Button",
+                    "id": "ed3e237a-3c2a-4267-b7ca-d107a9e17ac7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8b4832ef-9755-44f3-8eef-cd7d4e7136fc",
+                    "path": "<Keyboard>/#(A)",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "ConsoleActivation",
+                    "action": "activate_toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "ConsoleActivation",
+            "bindingGroup": "ConsoleActivation",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
