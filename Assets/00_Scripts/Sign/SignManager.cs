@@ -58,6 +58,16 @@ namespace NetApp
         // -------------------- On Recv process ----------------------//
         public void OnSignIn(Result result, Net.RecvPacket packet)
         {
+            byte[] msglen_bytes;
+            packet.Read(out msglen_bytes, sizeof(int));
+            int msg_len = BitConverter.ToInt32(msglen_bytes, 0);
+
+            byte[] msg_bytes;
+            packet.Read(out msg_bytes, msg_len);
+            string msg = Encoding.Unicode.GetString(msg_bytes);
+
+            DebugConsoleGUIController.Instance.ShowMsg(msg);
+
             switch (result)
             {                
                 case Result.NotExistID:

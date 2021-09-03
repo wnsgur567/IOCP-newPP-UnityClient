@@ -29,6 +29,7 @@ namespace Net
         private packetId_t m_newRecvID;
 
         NetStateBase m_current_state;
+        SignState m_sign_state;
 
         public NetSession()
         {
@@ -89,6 +90,8 @@ namespace Net
 
             // decryption
             CipherManager.Instance.Decryption(recvPacket.m_stream, data_size);
+
+            OnRecvComplete(recvPacket);
         }
         public void Send(SendPacket sendPacket)
         {
@@ -122,6 +125,42 @@ namespace Net
 
             // send sendstream
             m_netstream.Write(m_sendstream, 0, total_size);
+
+            OnSendComplete();
+        }
+
+        public void OnRecvComplete(RecvPacket recvPacket)
+        {
+            object signal = m_current_state.OnRecvComplete(recvPacket);
+
+            switch (m_current_state.SessionState)
+            {
+                case NetStateBase.State.None:
+                    break;
+                case NetStateBase.State.Sign:
+
+                    switch ((SignState.Result)signal)
+                    {
+                        case SignState.Result.Success_SingIn:
+                            // TODO : state change
+                            break;
+                        case SignState.Result.Success_SignOut:
+                            break;
+                        case SignState.Result.Success_DeleteAccount:
+                            break;
+                        default:
+                            break;
+                    }
+                    
+
+                    break;
+                default:
+                    break;
+            }
+        }
+        public void OnSendComplete()
+        {
+            m_current_state.OnSendComplete();
         }
     }
 }

@@ -8,6 +8,18 @@ namespace Net
 {
     public class SignState : NetStateBase
     {
+        internal bool IsSignedIn;
+
+        NetStateBase.State m_state;
+
+        public NetStateBase.State SessionState { get => m_state; }
+
+        public SignState()
+        {
+            IsSignedIn = false;
+            m_state = NetStateBase.State.Sign;
+        }
+
         public enum Protocol : Int64
         {
             None = 0,
@@ -33,19 +45,8 @@ namespace Net
         }
 
 
-        public void OnRecved(RecvPacket recvpacket)
+        public object OnRecvComplete(RecvPacket recvPacket)
         {
-
-        }
-
-        public void OnSended()
-        {
-            // when send completed,
-            // recv result from SERVER
-            RecvPacket recvPacket;
-            NetworkManager.Instance.Recv(out recvPacket);
-
-
             // unpack recvpacket data
             byte[] protocol_bytes;
             recvPacket.Read(out protocol_bytes, sizeof(Protocol));
@@ -76,7 +77,16 @@ namespace Net
                     break;
             }
 
-        }       
+            return result;
+        }
+
+        public void OnSendComplete()
+        {
+            // when send completed,
+            // recv result from SERVER
+            RecvPacket recvPacket;
+            NetworkManager.Instance.Recv(out recvPacket);
+        }
 
 
         #region Exception
