@@ -1,3 +1,5 @@
+#define __DEBUG
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +10,7 @@ using gsize32_t = System.UInt32;
 using gsize64_t = System.UInt64;
 using System.Threading;
 using System;
+using System.Text;
 
 namespace Net
 {
@@ -35,7 +38,8 @@ namespace Net
         private Thread m_net_main_thread;
         private Thread m_net_recv_thread;
 
-        
+        public State NetState { get { return m_state; } }
+
 
         private void Awake()
         {
@@ -101,12 +105,12 @@ namespace Net
 
     public class PacketBase
     {
-        public const int stream_capacity = 512;        
+        public const int stream_capacity = 512;
     }
 
     public class RecvPacket : PacketBase
     {
-        // id + state + othres
+        // state + othres
 
         int m_head;
         internal byte[] m_stream;
@@ -118,7 +122,7 @@ namespace Net
 
         public void __Initialize()
         {
-            m_head = sizeof(packetId_t);
+            m_head = 0;
             m_stream = new byte[stream_capacity];
         }
 
@@ -128,14 +132,19 @@ namespace Net
             Array.ConstrainedCopy(m_stream, m_head, data_bytes, 0, size);
             m_head += size;
         }
+
+        public int GetLength()
+        {
+            return m_head;
+        }
     }
 
     public class SendPacket : PacketBase
-    {       
+    {
         // data (state + others)
         // m_stream has only data
         int m_head;
-        internal byte[] m_stream;
+        protected internal byte[] m_stream;
 
         public SendPacket()
         {
@@ -147,15 +156,22 @@ namespace Net
             m_head = 0;
             m_stream = new byte[stream_capacity];
         }
-        public void SetID(packetId_t id)
-        {
-            byte[] id_bytes = BitConverter.GetBytes(id);
-            Array.ConstrainedCopy(id_bytes, 0, m_stream, 0, sizeof(packetId_t));
-        }
+
         public void Write(byte[] data_bytes, int size)
         {
             Array.ConstrainedCopy(data_bytes, 0, m_stream, m_head, size);
             m_head += size;
+        }
+        public void Write(string str)
+        {
+            int len = str.Length;
+            Write(BitConverter.GetBytes(len), sizeof(int));
+            Write(Encoding.Unicode.GetBytes(str), len);
+        }
+
+        public int GetLength()
+        {
+            return m_head;
         }
     }
 }

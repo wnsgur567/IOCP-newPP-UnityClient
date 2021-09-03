@@ -1,0 +1,33 @@
+{
+    "name": "SignPanelInput",
+    "maps": [
+        {
+            "name": "SignKeys",
+            "id": "819e96a6-7bd1-4093-8f78-59388bf52679",
+            "actions": [
+                {
+                    "name": "Tab",
+                    "type": "Button",
+                    "id": "eaf807d7-2ade-447d-8132-7e1e7f8f17ca",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d8685d8f-9e1c-4336-8c08-4747410f9876",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

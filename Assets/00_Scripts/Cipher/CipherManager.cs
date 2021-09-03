@@ -1,6 +1,9 @@
+#define __DEBUG
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using _DWORD = System.UInt32;
 using _WORD = System.UInt16;
@@ -36,14 +39,83 @@ public class CipherManager : Singleton<CipherManager>
         __Finalize();
     }
 
-    void __Initialize()
+    public unsafe int Encryption(byte[] pData, int size)
+    {
+        int complete_size = 0;
+
+#if __DEBUG
+        DebugConsoleGUIController.Instance.ShowMsg("Encryption...");
+#endif
+
+        while (complete_size < size)
+        {
+            fixed (byte* ptr = pData)
+                SEED_Encrtpy(ptr + complete_size, m_pdwRoundKey);
+
+#if __DEBUG
+            StringBuilder sb = new StringBuilder();
+            sb.Append("block en : ");
+            for (int i = 0; i < BLOCK_SIZE; i++)
+            {
+                fixed (byte* ptr = pData)
+                    sb.Append(string.Format("{0:X} ", (ptr + complete_size)[i]));
+            }
+            DebugConsoleGUIController.Instance.ShowMsg(sb.ToString());
+#endif
+            complete_size += BLOCK_SIZE;
+        }
+
+#if __DEBUG
+        DebugConsoleGUIController.Instance.ShowMsg("Encryption Complete");
+#endif
+
+        return complete_size;
+    }
+    public unsafe void Decryption(byte[] pData, int size)
+    {
+        int complete_size = 0;
+
+#if __DEBUG
+        DebugConsoleGUIController.Instance.ShowMsg("Decryption...");
+#endif
+
+        while (complete_size < size)
+        {
+            fixed (byte* ptr = pData)
+                SEED_Decrypt(ptr + complete_size, m_pdwRoundKey);
+
+#if __DEBUG
+            StringBuilder sb = new StringBuilder();
+            sb.Append("block de : ");
+            for (int i = 0; i < BLOCK_SIZE; i++)
+            {
+                fixed (byte* ptr = pData)
+                    sb.Append(string.Format("{0:X} ", (ptr + complete_size)[i]));
+            }
+            DebugConsoleGUIController.Instance.ShowMsg(sb.ToString());
+#endif
+            complete_size += BLOCK_SIZE;
+        }
+
+
+#if __DEBUG
+        DebugConsoleGUIController.Instance.ShowMsg("Decryption Complete");
+#endif
+    }
+
+
+
+    #region private Functions
+
+
+    private void __Initialize()
     {
         EndianCheck();
         SEED_KeySchedKey(m_userKey, m_pdwRoundKey);
 
         DebugConsoleGUIController.Instance.ShowMsg("Cipher Initialize...");
     }
-    void __Finalize()
+    private void __Finalize()
     {
         //DebugConsoleGUIController.Instance.ShowMsg("Cipher Finalize...");
     }
@@ -319,8 +391,9 @@ public class CipherManager : Singleton<CipherManager>
         pbData[14] = (byte)((L1 >> 16) & 0xFF);
         pbData[15] = (byte)((L1 >> 24) & 0xFF);
     }
+    #endregion
 
-    #region Base     
+    #region private base properties     
     private byte GetB0(_DWORD A)
     {
         return (byte)A;
