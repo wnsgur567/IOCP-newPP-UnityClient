@@ -7,6 +7,8 @@ using UnityEngine.UI;
 [DefaultExecutionOrder(-80)]
 public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @NewControls.IActivate_toggleActions
 {
+     
+
     [ReadOnly, SerializeField] bool IsShow;
     [Space(10)]
     [SerializeField, Min(100)] int m_max_lineCount;
@@ -25,7 +27,8 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
     {
         var mainPanel = GameObject.FindObjectOfType<Canvas>();
         m_slots_parent = new GameObject();
-        m_slots_parent.transform.SetParent(m_slots_parent.transform);
+        m_slots_parent.transform.SetParent(mainPanel.transform);
+        m_slots_parent.transform.localPosition = new Vector3(0, 0, 0);
         m_slots_parent.name = "slot_parent";
 
         m_active_slots_list = new List<TextSlot>();
@@ -35,12 +38,21 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
     private void OnEnable()
     {
         __Initailize_slots();
-        __Initialize_InputSys();
+        __Initialize_InputSys();       
     }
     private void OnDisable()
     {
         __Finalize_slots();
         __Finalize_InputSys();
+    }
+
+    private void Update()
+    {
+        while (DebugConsoleGUIConstants.m_msg_queue.Count > 0)
+        {
+            var msg_data = DebugConsoleGUIConstants.m_msg_queue.Dequeue();
+            ShowMsg(msg_data.msg, msg_data.delay);
+        }
     }
 
     public void __Initailize_slots()
@@ -50,6 +62,7 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
             var newSlot = GameObject.Instantiate<TextSlot>(m_origin_slot);
             newSlot.gameObject.SetActive(false);
             newSlot.transform.SetParent(m_slots_parent.transform);
+            newSlot.transform.localPosition = Vector3.zero;
             m_slot_pool.Enqueue(newSlot);
         }
     }
@@ -81,6 +94,7 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
         m_input_control.activate_toggle.Disable();
     }
 
+    // for unity thread
     public void ShowMsg(string msg_text, float delay = 10.0f)
     {
         if (m_slot_pool.Count < 1)
@@ -91,14 +105,20 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
         show_slot.transform.SetParent(content_parent.transform);
         show_slot.gameObject.SetActive(true);
         show_slot.transform.localScale = new Vector3(1, 1, 1);
+        
+        
+
+
         Debug.Log(msg_text);
         StartCoroutine(Co_RetrieveProcess(show_slot, delay));
     }
 
+    
+
     private IEnumerator Co_RetrieveProcess(TextSlot slot, float delay)
     {
         if (slot == null || slot.gameObject.activeSelf == false)
-            yield return null;
+            yield break;
 
         yield return new WaitForSeconds(delay);
 

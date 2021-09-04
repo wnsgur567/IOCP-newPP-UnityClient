@@ -11,6 +11,9 @@ namespace Net
             None,
 
             Sign = 1,
+            CharacterSelect = 2,
+
+            Chat = 100,
         }
 
         public State SessionState { get; }

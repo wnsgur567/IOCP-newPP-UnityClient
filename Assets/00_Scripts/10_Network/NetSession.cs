@@ -18,18 +18,23 @@ namespace Net
     public class NetSession
     {
         const string SERVER_IP = "127.0.0.1";
-        const int SERVER_PORT = 9000;
+        const int SERVER_PORT = 9000;        
 
-        private TcpClient m_client;
-        private NetworkStream m_netstream;
+        internal TcpClient m_client;
+        internal NetworkStream m_netstream;
+
         private byte[] m_recvstream;
-        private byte[] m_sendstream;
+        private byte[] m_sendstream;     
 
         private packetId_t m_newSendID;
         private packetId_t m_newRecvID;
+        Queue<SendPacket> m_sendpacket_queue;
+
+        internal bool IsSignedIn;
 
         NetStateBase m_current_state;
         SignState m_sign_state;
+        CharacterSelectState m_charselect_state;
 
         public NetSession()
         {
@@ -38,24 +43,45 @@ namespace Net
 
         public void __Initialize()
         {
+            __Initialize_Vars();
+            __Initialize_State();
+        }
+
+        #region Init functions
+        private void __Initialize_Vars()
+        {
             m_newSendID = 1;
             m_newRecvID = 1;
+
+            IsSignedIn = false;
 
             m_client = new TcpClient(SERVER_IP, SERVER_PORT);
             m_netstream = m_client.GetStream();
             m_recvstream = new byte[PacketBase.stream_capacity];
             m_sendstream = new byte[PacketBase.stream_capacity];
+            m_sendpacket_queue = new Queue<SendPacket>();
         }
+        private void __Initialize_State()
+        {
+            m_sign_state = new SignState();
+            m_charselect_state = new CharacterSelectState();
+
+            m_current_state = m_sign_state;
+        }
+        #endregion
+
 
         public void __Finalize()
         {
-            m_netstream.Close();
-            m_client.Close();
+            m_netstream.Close();            
+            m_client.Close();            
         }
+               
+        
 
-        public void Recv(out RecvPacket recvPacket)
+        public void Recv()
         {
-            recvPacket = new RecvPacket();
+            RecvPacket recvPacket = new RecvPacket();
             recvPacket.__Initialize();
 
             // size recv
@@ -93,7 +119,63 @@ namespace Net
 
             OnRecvComplete(recvPacket);
         }
-        public void Send(SendPacket sendPacket)
+        public void OnRecvComplete(RecvPacket recvPacket)
+        {
+            object signal = m_current_state.OnRecvComplete(recvPacket);
+
+            switch (m_current_state.SessionState)
+            {
+                case NetStateBase.State.None:
+                    break;
+                case NetStateBase.State.Sign:
+
+                    DebugConsoleGUIController.Instance.ShowMsg("Change State!!");
+
+                    // change state
+                    switch ((SignState.Result)signal)
+                    {
+                        case SignState.Result.Success_SingIn:
+                            IsSignedIn = true;
+                            m_current_state = m_charselect_state;
+                            break;
+                        case SignState.Result.Success_SignOut:
+                            IsSignedIn = false;
+                            m_current_state = m_sign_state;
+                            break;
+                        case SignState.Result.Success_DeleteAccount:
+                            IsSignedIn = false;
+                            m_current_state = m_sign_state;
+                            break;
+
+                        default:
+
+                            break;
+                    }
+                    break;
+
+                case NetStateBase.State.CharacterSelect:
+                    break;
+
+
+                default:
+                    break;
+            }
+        }
+
+        public void SendReq(SendPacket sendPacket)
+        {
+            m_sendpacket_queue.Enqueue(sendPacket);
+        }
+        public void SendQueueProcess()
+        {
+            while (m_sendpacket_queue.Count > 0)
+            {
+                var sendPacket = m_sendpacket_queue.Dequeue();
+                Send(sendPacket);
+            }
+        }
+
+        private void Send(SendPacket sendPacket)
         {
             // encryption
             packetSize_t encrypted_packetsize = 0;
@@ -129,35 +211,7 @@ namespace Net
             OnSendComplete();
         }
 
-        public void OnRecvComplete(RecvPacket recvPacket)
-        {
-            object signal = m_current_state.OnRecvComplete(recvPacket);
-
-            switch (m_current_state.SessionState)
-            {
-                case NetStateBase.State.None:
-                    break;
-                case NetStateBase.State.Sign:
-
-                    switch ((SignState.Result)signal)
-                    {
-                        case SignState.Result.Success_SingIn:
-                            // TODO : state change
-                            break;
-                        case SignState.Result.Success_SignOut:
-                            break;
-                        case SignState.Result.Success_DeleteAccount:
-                            break;
-                        default:
-                            break;
-                    }
-                    
-
-                    break;
-                default:
-                    break;
-            }
-        }
+        
         public void OnSendComplete()
         {
             m_current_state.OnSendComplete();
