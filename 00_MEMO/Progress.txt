@@ -4,11 +4,30 @@
 
 3. net send recv 테스트 
 
-
 -> 성공 시 SERVER 가 대응되도록 코드 작성
 
 
->>>>>>>>>> 
+>>>>>>>>>> 2021-09-04 // PM 06:04
+1. unity scrollrect 관련 버그 수정
+2. unity 에서 main thread 와  network thread 통신시 
+    constants(전역 static queue) 를 통해 데이터를 주고 받도록 수정
+3. sever 접속까지 완료 (Accept 까지는 잘 됨)
+
+TODO : 
+    1. 서버에서 state pattern 쪽 / session 으로 signal(protocol) 을 념겨줄(return value) 수 있도록 수정
+    2. 서버에서 state pattern 관련 class들을 처음 Initialize 시 모두 alloc 하고 대기시키도록
+        이후 관리 자료구조에 저장하기
+    3. 서버에서 sign state 가 client 에 대응되도록 수정
+
+    4. mysql 연동
+        1) 첫 서버 구동 시 sql을 통해서 db를 모두 불러오고
+        2) 해당 정보를 file 저장
+        3) client 와 통신 시 수정되는 사항들은 memory에 저장
+        4) 일정 주기마다 memory에 저장된 sign 관련 info들을 file 에 저장
+        5) 서버 닫을 때 모든 sign info data를 file 에 저장하고, db에 저장
+
+    5. c++ file 입출력 관련(위에서 사용해야 되니...)
+
 >>>>>>>>>> 
 >>>>>>>>>> 
 >>>>>>>>>> 

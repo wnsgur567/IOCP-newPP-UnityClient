@@ -59,17 +59,11 @@ namespace Net
             // call functions by protocol
             switch (protocol)
             {
-                case Protocol.SignIn:
-                    NetApp.SignManager.Instance.OnSignIn(result, recvpacket);
-                    break;
-                case Protocol.SignOut:
-                    NetApp.SignManager.Instance.OnSignOut(result, recvpacket);
-                    break;
-                case Protocol.SignUp:
-                    NetApp.SignManager.Instance.OnSignUp(result, recvpacket);
-                    break;
+                case Protocol.SignIn:                   
+                case Protocol.SignOut:                    
+                case Protocol.SignUp:                    
                 case Protocol.DeleteAccount:
-                    NetApp.SignManager.Instance.OnDeleteAccount(result, recvpacket);
+                    SignConstants.CallbackReq(protocol, result, recvpacket);
                     break;
 
                 default:

@@ -11,6 +11,11 @@ namespace NetApp
 
     public class SignManager : Singleton<SignManager>
     {
+        private void Update()
+        {
+            CallbackCheck();
+        }
+
         // -------------------- send process ----------------------//
         public void SignInProcess(string id, string pw)
         {
@@ -56,6 +61,30 @@ namespace NetApp
 
 
         // -------------------- On Recv process ----------------------//
+        private void CallbackCheck()
+        {
+            // sign recv callback queue check
+            while (Net.SignConstants.m_callback_queue.Count > 0)
+            {
+                var sign_data = Net.SignConstants.m_callback_queue.Dequeue();
+                switch (sign_data.protocol)
+                {                    
+                    case Protocol.SignIn:
+                        OnSignIn(sign_data.result, sign_data.recvPacket);
+                        break;
+                    case Protocol.SignOut:
+                        OnSignOut(sign_data.result, sign_data.recvPacket);
+                        break;
+                    case Protocol.SignUp:
+                        OnSignUp(sign_data.result, sign_data.recvPacket);
+                        break;
+                    case Protocol.DeleteAccount:
+                        OnDeleteAccount(sign_data.result, sign_data.recvPacket);
+                        break;                   
+                }
+            }
+        }
+
         public void OnSignIn(Result result, Net.RecvPacket packet)
         {
             byte[] msglen_bytes;
@@ -69,14 +98,14 @@ namespace NetApp
             DebugConsoleGUIController.Instance.ShowMsg(msg);
 
             switch (result)
-            {                
+            {
                 case Result.NotExistID:
                     break;
                 case Result.WrongPW:
                     break;
                 case Result.Success_SingIn:
                     break;
-                
+
                 default:
                     // exception
                     break;
@@ -85,10 +114,10 @@ namespace NetApp
         public void OnSignOut(Result result, Net.RecvPacket packet)
         {
             switch (result)
-            {               
+            {
                 case Result.Success_SignOut:
                     break;
-                
+
                 default:
                     // exception
                     break;
@@ -97,12 +126,12 @@ namespace NetApp
         public void OnSignUp(Result result, Net.RecvPacket packet)
         {
             switch (result)
-            {              
+            {
                 case Result.ExistID:
-                    break;                   
+                    break;
                 case Result.Success_SignUp:
                     break;
-                
+
                 default:
                     // exception
                     break;
@@ -112,9 +141,9 @@ namespace NetApp
         public void OnDeleteAccount(Result result, Net.RecvPacket packet)
         {
             switch (result)
-            {                
+            {
                 case Result.WrongPW:
-                    break;               
+                    break;
                 case Result.Success_DeleteAccount:
                     break;
 

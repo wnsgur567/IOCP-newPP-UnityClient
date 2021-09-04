@@ -48,9 +48,9 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
 
     private void Update()
     {
-        while (DebugConsoleGUIConstants.m_msg_queue.Count > 0)
+        while (Net.DebugConsoleGUIConstants.m_msg_queue.Count > 0)
         {
-            var msg_data = DebugConsoleGUIConstants.m_msg_queue.Dequeue();
+            var msg_data = Net.DebugConsoleGUIConstants.m_msg_queue.Dequeue();
             ShowMsg(msg_data.msg, msg_data.delay);
         }
     }

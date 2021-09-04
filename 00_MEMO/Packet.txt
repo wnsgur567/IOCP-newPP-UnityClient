@@ -1,0 +1,48 @@
+
+
+------------------------------------------------
+Server (C++)
+-- Recv (InputMemoryStreamPtr 소유)
+    id + data
+-- Send (OutputMemoryStreamPtr 소유)
+    size + id + data
+------------------------------------------------
+
+
+------------------------------------------------
+Client (C#)
+
+-- Recv
+1. recvthread 에서 netstream 에서 Read (네트워크 통신)
+    1) read packet size
+    2) read data
+2. data 부분을 recvpacket의 stream 에 복사
+3. recvpacket 을 지지고 볶고
+
+-- Send
+1.App에서 sendpacket에 data 쓰기
+2.send 요청
+3.send용 byte stream 을 사용
+    byte stream 에
+        total size 붙이기
+        packet id 붙이기 
+        encryption 된 snedpacket's stream 붙이기
+
+4. netstream 에 write (네트워크 통신)
+
+------------------------------------------------
+
+
+
+ps.... string 관련
+
+https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=ruvendix&logNo=220829609686
+
+char 는 1byte
+unicode , wchar_t 는 2byte 고정
+utf 는 가변
+
+network 전송 시 unicode
+c++     unicode (wchar_t)
+c#      utf16
+mysql   utf8
