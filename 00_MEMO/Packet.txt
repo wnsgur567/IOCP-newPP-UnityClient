@@ -2,8 +2,17 @@
 
 ------------------------------------------------
 Server (C++)
+
 -- Recv (InputMemoryStreamPtr 소유)
     id + data
+    1. networkmaanger 가 recv 를 수행
+    2. recv complete 되었을 경우 -> session 의 recv complete callback 을 호출
+    3. callback function 에서 packet id 값 확인 및 decryption 진행
+    4. state 별로 data stream 처리 (protocol 부터)
+    5. state 내부에서 알아서 처리하고 'Signal' 과 outputstream 을 반환
+    6-1. 5번에서 생성된 Signal 을 기반으로 session 내부에서 처리할 게 있다면 처리
+    6-2. 5번에서 생성된 stream 을 기반으로 client 에게 결과를 send)
+
 -- Send (OutputMemoryStreamPtr 소유)
     size + id + data
 ------------------------------------------------
