@@ -6,16 +6,22 @@ using UnityEngine;
 namespace Net
 {
 
-    public class CharacterSelectState : NetStateBase
+    public class CharacterSelectState : INetStateBase
     {
-        NetStateBase.State m_state;
-
-        public CharacterSelectState()
+        NetSession session;
+        INetStateBase.State m_state;
+        public NetSession Owner
         {
-            m_state = NetStateBase.State.CharacterSelect;
+            get => session;
+            set { session = value; }
+        }
+        public CharacterSelectState(NetSession Owner)
+        {
+            m_state = INetStateBase.State.CharacterSelect;
+            this.Owner = Owner;
         }
 
-        public NetStateBase.State SessionState => m_state;
+        public INetStateBase.State SessionState => m_state;
 
         public enum Protocol : Int64
         {
@@ -30,7 +36,7 @@ namespace Net
             // start 2000
         }
 
-        public object OnRecvComplete(RecvPacket recvpacket)
+        public void OnRecvComplete(RecvPacket recvpacket)
         {
             // unpack recvpacket data
             byte[] protocol_bytes;
@@ -44,7 +50,7 @@ namespace Net
             // TODO : ...
 
 
-            return result;
+           
         }
 
         public void OnSendComplete()

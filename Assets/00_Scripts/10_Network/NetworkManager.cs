@@ -57,6 +57,8 @@ namespace Net
         {
             m_state = State.Connecting;
 
+            CipherManager.__Initialize();
+
             m_thread_endFlag = false;
             m_net_main_thread = new Thread(NetThread);
             m_net_main_thread.Start();
@@ -67,6 +69,8 @@ namespace Net
             m_state = State.Disconnecting;
             m_session.__Finalize();
             m_state = State.Disconnected;
+
+            CipherManager.__Finalize();
         }
 
 

@@ -35,6 +35,18 @@ namespace Net
             Array.ConstrainedCopy(m_stream, m_head, data_bytes, 0, size);
             m_head += size;
         }
+        public void Read(out string str)
+        {
+            // get string length
+            byte[] len_bytes;
+            Read(out len_bytes, sizeof(int));
+            int len = Convert.ToInt32(len_bytes);
+
+            // get string 
+            byte[] str_bytes;
+            Read(out str_bytes, len * 2);   // unicode is 2 bytes
+            str = Encoding.Unicode.GetString(str_bytes);
+        }
 
         public int GetLength()
         {
@@ -67,7 +79,7 @@ namespace Net
         }
         public void Write(string str)
         {
-            int len = str.Length;
+            int len = str.Length * 2; // unicode is 2 bytes
             Write(BitConverter.GetBytes(len), sizeof(int));
             Write(Encoding.Unicode.GetBytes(str), len);
         }

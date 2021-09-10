@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Net
 {
-    public interface NetStateBase
+    public interface INetStateBase
     {
         public enum State
         {
@@ -16,9 +16,10 @@ namespace Net
             Chat = 100,
         }
 
+        public NetSession Owner { get; set; }
         public State SessionState { get; }
 
-        public object OnRecvComplete(RecvPacket recvpacket);
+        public void OnRecvComplete(RecvPacket recvpacket);
         public void OnSendComplete();
 
         public void OccuredRecvException();

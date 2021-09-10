@@ -8,43 +8,29 @@ using UnityEngine;
 using _DWORD = System.UInt32;
 using _WORD = System.UInt16;
 
-public class CipherManager : Singleton<CipherManager>
+public static class CipherManager
 {
-    [ReadOnly, SerializeField] bool IsLittelEndian;
+    static bool IsLittelEndian;
 
 
     const int BLOCK_SIZE = 16;
-    _DWORD[] m_userKey = null;
-    _DWORD[] m_pdwRoundKey = null;
-
-    private void Awake()
-    {
-        m_pdwRoundKey = new _DWORD[32];
-        m_userKey = new _DWORD[]
+    static _DWORD[] m_userKey = new _DWORD[]
         {
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00
         };
-    }
+    static _DWORD[] m_pdwRoundKey = new _DWORD[32];
 
-    private void OnEnable()
-    {
-        __Initialize();
-    }
+    
 
-    private void OnDisable()
-    {
-        __Finalize();
-    }
-
-    public unsafe int Encryption(byte[] pData, int size)
+    public static unsafe int Encryption(byte[] pData, int size)
     {
         int complete_size = 0;
 
 #if __DEBUG
-        DebugConsoleGUIController.Instance.ShowMsg("Encryption...");
+        Net.DebugConsoleGUIConstants.ShowMsg_Req("Encryption...");
 #endif
 
         while (complete_size < size)
@@ -60,23 +46,23 @@ public class CipherManager : Singleton<CipherManager>
                 fixed (byte* ptr = pData)
                     sb.Append(string.Format("{0:X} ", (ptr + complete_size)[i]));
             }
-            DebugConsoleGUIController.Instance.ShowMsg(sb.ToString());
+            Net.DebugConsoleGUIConstants.ShowMsg_Req("sb.ToString()");            
 #endif
             complete_size += BLOCK_SIZE;
         }
 
 #if __DEBUG
-        DebugConsoleGUIController.Instance.ShowMsg("Encryption Complete");
+        Net.DebugConsoleGUIConstants.ShowMsg_Req("Encryption Complete");
 #endif
 
         return complete_size;
     }
-    public unsafe void Decryption(byte[] pData, int size)
+    public static unsafe void Decryption(byte[] pData, int size)
     {
         int complete_size = 0;
 
 #if __DEBUG
-        DebugConsoleGUIController.Instance.ShowMsg("Decryption...");
+        Net.DebugConsoleGUIConstants.ShowMsg_Req("Decryption...");      
 #endif
 
         while (complete_size < size)
@@ -92,39 +78,38 @@ public class CipherManager : Singleton<CipherManager>
                 fixed (byte* ptr = pData)
                     sb.Append(string.Format("{0:X} ", (ptr + complete_size)[i]));
             }
-            DebugConsoleGUIController.Instance.ShowMsg(sb.ToString());
+            Net.DebugConsoleGUIConstants.ShowMsg_Req(sb.ToString());
 #endif
             complete_size += BLOCK_SIZE;
         }
 
 
 #if __DEBUG
-        DebugConsoleGUIController.Instance.ShowMsg("Decryption Complete");
+        Net.DebugConsoleGUIConstants.ShowMsg_Req("Decryption Complete");
 #endif
     }
+    
 
-
-
-    #region private Functions
-
-
-    private void __Initialize()
+    public static void __Initialize()
     {
         EndianCheck();
         SEED_KeySchedKey(m_userKey, m_pdwRoundKey);
 
-        DebugConsoleGUIController.Instance.ShowMsg("Cipher Initialize...");
+        Net.DebugConsoleGUIConstants.ShowMsg_Req("Cipher Initialize...");      
     }
-    private void __Finalize()
+    public static void __Finalize()
     {
-        //DebugConsoleGUIController.Instance.ShowMsg("Cipher Finalize...");
+        Net.DebugConsoleGUIConstants.ShowMsg_Req("Cipher Finalize...");
     }
 
-    private void EndianCheck()
+
+    #region private Functions
+
+    private static void EndianCheck()
     {
         IsLittelEndian = BitConverter.IsLittleEndian;
     }
-    private unsafe void SEED_KeySchedKey(_DWORD[] pbUserKey, _DWORD[] pdwRoundKey)
+    private static unsafe void SEED_KeySchedKey(_DWORD[] pbUserKey, _DWORD[] pdwRoundKey)
     {
         _DWORD A, B, C, D;               // Iuput/output values at each rounds
         _DWORD T0, T1;                   // Temporary variable
@@ -185,7 +170,7 @@ public class CipherManager : Singleton<CipherManager>
             SS2[GetB2(T1)] ^ SS3[GetB3(T1)];
     }
 
-    private unsafe void SEED_KeySched(ref _DWORD L0, ref _DWORD L1, ref _DWORD R0, ref _DWORD R1, _DWORD* roundKey)
+    private static unsafe void SEED_KeySched(ref _DWORD L0, ref _DWORD L1, ref _DWORD R0, ref _DWORD R1, _DWORD* roundKey)
     {
         _DWORD T0 = R0 ^ roundKey[0];
         _DWORD T1 = R1 ^ roundKey[1];
@@ -203,7 +188,7 @@ public class CipherManager : Singleton<CipherManager>
         L1 ^= T1;
     }
 
-    private unsafe void SEED_Encrtpy(byte* pbData, _DWORD[] pdwRoundkey)
+    private static unsafe void SEED_Encrtpy(byte* pbData, _DWORD[] pdwRoundkey)
     {
         _DWORD L0, L1, R0, R1;       // Iuput/output values at each rounds
                                      //DWORD T0, T1;               // Temporary variables for round function F
@@ -298,7 +283,7 @@ public class CipherManager : Singleton<CipherManager>
 
     }
 
-    private unsafe void SEED_Decrypt(byte* pbData, _DWORD[] pdwRoundkey)
+    private static unsafe void SEED_Decrypt(byte* pbData, _DWORD[] pdwRoundkey)
     {
         _DWORD L0, L1, R0, R1;        // Iuput/output values at each rounds
                                       //DWORD T0, T1;                // Temporary variables for round function F
@@ -394,25 +379,25 @@ public class CipherManager : Singleton<CipherManager>
     #endregion
 
     #region private base properties     
-    private byte GetB0(_DWORD A)
+    private static byte GetB0(_DWORD A)
     {
         return (byte)A;
     }
-    private byte GetB1(_DWORD A)
+    private static byte GetB1(_DWORD A)
     {
         return (byte)(A >> 8);
     }
-    private byte GetB2(_DWORD A)
+    private static byte GetB2(_DWORD A)
     {
         return (byte)(A >> 16);
     }
-    private byte GetB3(_DWORD A)
+    private static byte GetB3(_DWORD A)
     {
         return (byte)(A >> 24);
     }
 
 
-    private unsafe void RoundKeyUpdate0(ref _DWORD T0, ref _DWORD T1,
+    private static unsafe void RoundKeyUpdate0(ref _DWORD T0, ref _DWORD T1,
            _DWORD* K, ref _DWORD A, ref _DWORD B, ref _DWORD C, ref _DWORD D, _DWORD KC)
     {
         T0 = A + C - KC;
@@ -425,7 +410,7 @@ public class CipherManager : Singleton<CipherManager>
         A = (A >> 8) ^ (B << 24);
         B = (B >> 8) ^ (T0 << 24);
     }
-    private unsafe void RoundKeyUpdate1(ref _DWORD T0, ref _DWORD T1,
+    private static unsafe void RoundKeyUpdate1(ref _DWORD T0, ref _DWORD T1,
         _DWORD* K, ref _DWORD A, ref _DWORD B, ref _DWORD C, ref _DWORD D, _DWORD KC)
     {
         T0 = A + C - KC;
@@ -439,24 +424,24 @@ public class CipherManager : Singleton<CipherManager>
         D = (D << 8) ^ (T0 >> 24);
     }
 
-    private _DWORD KC0 = 0x9e3779b9;
-    private _DWORD KC1 = 0x3c6ef373;
-    private _DWORD KC2 = 0x78dde6e6;
-    private _DWORD KC3 = 0xf1bbcdcc;
-    private _DWORD KC4 = 0xe3779b99;
-    private _DWORD KC5 = 0xc6ef3733;
-    private _DWORD KC6 = 0x8dde6e67;
-    private _DWORD KC7 = 0x1bbcdccf;
-    private _DWORD KC8 = 0x3779b99e;
-    private _DWORD KC9 = 0x6ef3733c;
-    private _DWORD KC10 = 0xdde6e678;
-    private _DWORD KC11 = 0xbbcdccf1;
-    private _DWORD KC12 = 0x779b99e3;
-    private _DWORD KC13 = 0xef3733c6;
-    private _DWORD KC14 = 0xde6e678d;
-    private _DWORD KC15 = 0xbcdccf1b;
+    private static _DWORD KC0 = 0x9e3779b9;
+    private static _DWORD KC1 = 0x3c6ef373;
+    private static _DWORD KC2 = 0x78dde6e6;
+    private static _DWORD KC3 = 0xf1bbcdcc;
+    private static _DWORD KC4 = 0xe3779b99;
+    private static _DWORD KC5 = 0xc6ef3733;
+    private static _DWORD KC6 = 0x8dde6e67;
+    private static _DWORD KC7 = 0x1bbcdccf;
+    private static _DWORD KC8 = 0x3779b99e;
+    private static _DWORD KC9 = 0x6ef3733c;
+    private static _DWORD KC10 = 0xdde6e678;
+    private static _DWORD KC11 = 0xbbcdccf1;
+    private static _DWORD KC12 = 0x779b99e3;
+    private static _DWORD KC13 = 0xef3733c6;
+    private static _DWORD KC14 = 0xde6e678d;
+    private static _DWORD KC15 = 0xbcdccf1b;
 
-    private _DWORD[] SS0 = new _DWORD[256]{
+    private static _DWORD[] SS0 = new _DWORD[256]{
 0x2989a1a8, 0x05858184, 0x16c6d2d4, 0x13c3d3d0, 0x14445054, 0x1d0d111c, 0x2c8ca0ac, 0x25052124,
 0x1d4d515c, 0x03434340, 0x18081018, 0x1e0e121c, 0x11415150, 0x3cccf0fc, 0x0acac2c8, 0x23436360,
 0x28082028, 0x04444044, 0x20002020, 0x1d8d919c, 0x20c0e0e0, 0x22c2e2e0, 0x08c8c0c8, 0x17071314,
@@ -490,7 +475,7 @@ public class CipherManager : Singleton<CipherManager>
 0x16061214, 0x3a0a3238, 0x18485058, 0x14c4d0d4, 0x22426260, 0x29092128, 0x07070304, 0x33033330,
 0x28c8e0e8, 0x1b0b1318, 0x05050104, 0x39497178, 0x10809090, 0x2a4a6268, 0x2a0a2228, 0x1a8a9298
 };
-    private _DWORD[] SS1 = new _DWORD[256] {
+    private static _DWORD[] SS1 = new _DWORD[256] {
 0x38380830, 0xe828c8e0, 0x2c2d0d21, 0xa42686a2, 0xcc0fcfc3, 0xdc1eced2, 0xb03383b3, 0xb83888b0,
 0xac2f8fa3, 0x60204060, 0x54154551, 0xc407c7c3, 0x44044440, 0x6c2f4f63, 0x682b4b63, 0x581b4b53,
 0xc003c3c3, 0x60224262, 0x30330333, 0xb43585b1, 0x28290921, 0xa02080a0, 0xe022c2e2, 0xa42787a3,
@@ -524,7 +509,7 @@ public class CipherManager : Singleton<CipherManager>
 0x34370733, 0xe427c7e3, 0x24240420, 0xa42484a0, 0xc80bcbc3, 0x50134353, 0x080a0a02, 0x84078783,
 0xd819c9d1, 0x4c0c4c40, 0x80038383, 0x8c0f8f83, 0xcc0ecec2, 0x383b0b33, 0x480a4a42, 0xb43787b3
 };
-    private _DWORD[] SS2 = new _DWORD[256]{
+    private static _DWORD[] SS2 = new _DWORD[256]{
 0xa1a82989, 0x81840585, 0xd2d416c6, 0xd3d013c3, 0x50541444, 0x111c1d0d, 0xa0ac2c8c, 0x21242505,
 0x515c1d4d, 0x43400343, 0x10181808, 0x121c1e0e, 0x51501141, 0xf0fc3ccc, 0xc2c80aca, 0x63602343,
 0x20282808, 0x40440444, 0x20202000, 0x919c1d8d, 0xe0e020c0, 0xe2e022c2, 0xc0c808c8, 0x13141707,
@@ -558,7 +543,7 @@ public class CipherManager : Singleton<CipherManager>
 0x12141606, 0x32383a0a, 0x50581848, 0xd0d414c4, 0x62602242, 0x21282909, 0x03040707, 0x33303303,
 0xe0e828c8, 0x13181b0b, 0x01040505, 0x71783949, 0x90901080, 0x62682a4a, 0x22282a0a, 0x92981a8a
 };
-    private _DWORD[] SS3 = new _DWORD[256] {
+    private static _DWORD[] SS3 = new _DWORD[256] {
 0x08303838, 0xc8e0e828, 0x0d212c2d, 0x86a2a426, 0xcfc3cc0f, 0xced2dc1e, 0x83b3b033, 0x88b0b838,
 0x8fa3ac2f, 0x40606020, 0x45515415, 0xc7c3c407, 0x44404404, 0x4f636c2f, 0x4b63682b, 0x4b53581b,
 0xc3c3c003, 0x42626022, 0x03333033, 0x85b1b435, 0x09212829, 0x80a0a020, 0xc2e2e022, 0x87a3a427,

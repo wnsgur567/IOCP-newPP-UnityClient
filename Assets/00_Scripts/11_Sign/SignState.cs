@@ -6,16 +6,21 @@ using System;
 
 namespace Net
 {
-    public class SignState : NetStateBase
-    {       
+    public class SignState : INetStateBase
+    {
+        NetSession session;
+        INetStateBase.State m_state;
+        public NetSession Owner { 
+            get => session; 
+            set { session = value; }
+        }
 
-        NetStateBase.State m_state;
+        public INetStateBase.State SessionState { get => m_state; }
 
-        public NetStateBase.State SessionState { get => m_state; }
-
-        public SignState()
-        {            
-            m_state = NetStateBase.State.Sign;
+        public SignState(NetSession Owner)
+        {
+            m_state = INetStateBase.State.Sign;
+            this.Owner = Owner;
         }
 
         public enum Protocol : Int64
@@ -45,7 +50,7 @@ namespace Net
         }
 
 
-        public object OnRecvComplete(RecvPacket recvpacket)
+        public void OnRecvComplete(RecvPacket recvpacket)
         {
             // unpack recvpacket data
             byte[] protocol_bytes;
@@ -59,9 +64,9 @@ namespace Net
             // call functions by protocol
             switch (protocol)
             {
-                case Protocol.SignIn:                   
-                case Protocol.SignOut:                    
-                case Protocol.SignUp:                    
+                case Protocol.SignIn:
+                case Protocol.SignOut:
+                case Protocol.SignUp:
                 case Protocol.DeleteAccount:
                     SignConstants.CallbackReq(protocol, result, recvpacket);
                     break;
@@ -71,12 +76,29 @@ namespace Net
                     break;
             }
 
-            return result;
+            switch (result)
+            {
+                case Result.Success_SingIn:
+                    Owner.IsSignedIn = true;
+                    Owner.ChangeState(Owner.m_charselect_state);
+                    DebugConsoleGUIConstants.ShowMsg_Req("Change State!!");                    
+                    break;
+                case Result.Success_SignOut:
+                    Owner.IsSignedIn = false;
+                    break;
+                case Result.Success_DeleteAccount:
+                    Owner.IsSignedIn = false;
+                    break;
+
+                default:
+
+                    break;
+            }            
         }
 
         public void OnSendComplete()
         {
-            
+
         }
 
 

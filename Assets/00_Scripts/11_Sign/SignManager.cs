@@ -25,9 +25,11 @@ namespace NetApp
 
 
             // write to sendpacket's stream
-            sendpacket.Write(BitConverter.GetBytes((Int32)protocol), sizeof(Protocol));
+            sendpacket.Write(BitConverter.GetBytes((Int64)protocol), sizeof(Protocol));
             sendpacket.Write(id);
             sendpacket.Write(pw);
+
+            Net.NetworkManager.Instance.Send(sendpacket);
         }
 
         public void SignOutProcess()
@@ -39,7 +41,7 @@ namespace NetApp
 
 
             // write to sendpacket's stream
-            sendpacket.Write(BitConverter.GetBytes((Int32)protocol), sizeof(Protocol));
+            sendpacket.Write(BitConverter.GetBytes((Int64)protocol), sizeof(Protocol));
         }
 
         public void SignUpProcess(string id, string pw)
@@ -51,7 +53,7 @@ namespace NetApp
 
 
             // write to sendpacket's stream
-            sendpacket.Write(BitConverter.GetBytes((Int32)protocol), sizeof(Protocol));
+            sendpacket.Write(BitConverter.GetBytes((Int64)protocol), sizeof(Protocol));
             sendpacket.Write(id);
             sendpacket.Write(pw);
 

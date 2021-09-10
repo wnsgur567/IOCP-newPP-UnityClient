@@ -32,9 +32,9 @@ namespace Net
 
         internal bool IsSignedIn;
 
-        NetStateBase m_current_state;
-        SignState m_sign_state;
-        CharacterSelectState m_charselect_state;
+        INetStateBase m_current_state;
+        internal SignState m_sign_state;
+        internal CharacterSelectState m_charselect_state;
 
         public NetSession()
         {
@@ -63,8 +63,8 @@ namespace Net
         }
         private void __Initialize_State()
         {
-            m_sign_state = new SignState();
-            m_charselect_state = new CharacterSelectState();
+            m_sign_state = new SignState(this);
+            m_charselect_state = new CharacterSelectState(this);
 
             m_current_state = m_sign_state;
         }
@@ -75,6 +75,11 @@ namespace Net
         {
             m_netstream.Close();            
             m_client.Close();            
+        }
+
+        public void ChangeState(INetStateBase next_stage)
+        {
+            m_current_state = next_stage;
         }
                
         
@@ -115,51 +120,13 @@ namespace Net
                                     data_size);
 
             // decryption
-            CipherManager.Instance.Decryption(recvPacket.m_stream, data_size);
+            CipherManager.Decryption(recvPacket.m_stream, data_size);
 
             OnRecvComplete(recvPacket);
         }
         public void OnRecvComplete(RecvPacket recvPacket)
         {
-            object signal = m_current_state.OnRecvComplete(recvPacket);
-
-            switch (m_current_state.SessionState)
-            {
-                case NetStateBase.State.None:
-                    break;
-                case NetStateBase.State.Sign:
-
-                    DebugConsoleGUIController.Instance.ShowMsg("Change State!!");
-
-                    // change state
-                    switch ((SignState.Result)signal)
-                    {
-                        case SignState.Result.Success_SingIn:
-                            IsSignedIn = true;
-                            m_current_state = m_charselect_state;
-                            break;
-                        case SignState.Result.Success_SignOut:
-                            IsSignedIn = false;
-                            m_current_state = m_sign_state;
-                            break;
-                        case SignState.Result.Success_DeleteAccount:
-                            IsSignedIn = false;
-                            m_current_state = m_sign_state;
-                            break;
-
-                        default:
-
-                            break;
-                    }
-                    break;
-
-                case NetStateBase.State.CharacterSelect:
-                    break;
-
-
-                default:
-                    break;
-            }
+            m_current_state.OnRecvComplete(recvPacket);            
         }
 
         public void SendReq(SendPacket sendPacket)
@@ -179,7 +146,7 @@ namespace Net
         {
             // encryption
             packetSize_t encrypted_packetsize = 0;
-            encrypted_packetsize = CipherManager.Instance.Encryption(sendPacket.m_stream, sendPacket.GetLength());
+            encrypted_packetsize = CipherManager.Encryption(sendPacket.m_stream, sendPacket.GetLength());
 
 
             /// set sendstream for send
