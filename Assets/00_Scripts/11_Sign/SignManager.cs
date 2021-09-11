@@ -66,11 +66,11 @@ namespace NetApp
         private void CallbackCheck()
         {
             // sign recv callback queue check
-            while (Net.SignConstants.m_callback_queue.Count > 0)
+            while (false == Net.SignConstants.IsEmpty())
             {
-                var sign_data = Net.SignConstants.m_callback_queue.Dequeue();
+                var sign_data = Net.SignConstants.Dequeue();
                 switch (sign_data.protocol)
-                {                    
+                {
                     case Protocol.SignIn:
                         OnSignIn(sign_data.result, sign_data.recvPacket);
                         break;
@@ -82,7 +82,7 @@ namespace NetApp
                         break;
                     case Protocol.DeleteAccount:
                         OnDeleteAccount(sign_data.result, sign_data.recvPacket);
-                        break;                   
+                        break;
                 }
             }
         }

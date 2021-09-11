@@ -17,13 +17,23 @@ namespace Net
             public RecvPacket recvPacket;
         }
 
-        public static Queue<SignData> m_callback_queue = new Queue<SignData>();
+        private static Queue<SignData> m_callback_queue = new Queue<SignData>();
 
         public static void CallbackReq(Protocol protocol, Result result, RecvPacket recvPacket)
         {
             m_callback_queue.Enqueue(
                 new SignData()
                 { protocol = protocol, result = result, recvPacket = recvPacket });
+        }
+        public static bool IsEmpty()
+        {
+            if (m_callback_queue.Count == 0)
+                return true;
+            return false;
+        }
+        public static SignData Dequeue()
+        {
+            return m_callback_queue.Dequeue();
         }
     }
 }
