@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 [DefaultExecutionOrder(-80)]
-public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @NewControls.IActivate_toggleActions
+public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>
 {
      
 
@@ -19,9 +19,6 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
     GameObject m_slots_parent;
     [SerializeField] TextSlot m_origin_slot;
     [SerializeField] ContentSizeFitter content_parent;
-
-    //[Space(10)]
-    @NewControls m_input_control;
 
     private void Awake()
     {
@@ -37,13 +34,11 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
 
     private void OnEnable()
     {
-        __Initailize_slots();
-        __Initialize_InputSys();       
+        __Initailize_slots();         
     }
     private void OnDisable()
     {
-        __Finalize_slots();
-        __Finalize_InputSys();
+        __Finalize_slots();  
     }
 
     private void Update()
@@ -82,18 +77,7 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
         }
     }
 
-    public void __Initialize_InputSys()
-    {
-        m_input_control = new NewControls();
-        m_input_control.activate_toggle.SetCallbacks(instance: this);
-        m_input_control.activate_toggle.Enable();
-    }
-
-    public void __Finalize_InputSys()
-    {
-        m_input_control.activate_toggle.Disable();
-    }
-
+ 
     // for unity thread
     public void ShowMsg(string msg_text, float delay = 10.0f)
     {
@@ -104,8 +88,7 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
         show_slot.SetText(msg_text);
         show_slot.transform.SetParent(content_parent.transform);
         show_slot.gameObject.SetActive(true);
-        show_slot.transform.localScale = new Vector3(1, 1, 1);
-        
+        show_slot.transform.localScale = new Vector3(1, 1, 1);       
         
 
 
@@ -129,12 +112,6 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>, @
         slot.gameObject.SetActive(false);
         slot.transform.SetParent(m_slots_parent.transform,true);       
         m_slot_pool.Enqueue(slot);
-    }
-
-    public void OnActivate_toggle(InputAction.CallbackContext context)
-    {
-        IsShow = !IsShow;
-        Debug.Log("Input System Callback");
     }
 
     [ContextMenu("test message")]

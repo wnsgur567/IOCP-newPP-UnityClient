@@ -52,7 +52,7 @@ namespace Net
                 catch (Exception)
                 {
 
-                    throw;
+                    m_thread_endFlag = true;
                 }
             }
 #if __DEBUG

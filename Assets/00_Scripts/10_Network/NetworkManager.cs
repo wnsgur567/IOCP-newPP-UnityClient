@@ -47,6 +47,10 @@ namespace Net
         {
             __Initialize();
         }
+        private void OnApplicationQuit()
+        {
+            __Finalize();
+        }
 
         public void Log(string msg)
         {

@@ -9,6 +9,7 @@ using gsize32_t = System.UInt32;
 using gsize64_t = System.UInt64;
 using System;
 using System.Threading;
+using System.Net;
 
 namespace Net
 {
@@ -18,13 +19,13 @@ namespace Net
     public class NetSession
     {
         const string SERVER_IP = "127.0.0.1";
-        const int SERVER_PORT = 9000;        
+        const int SERVER_PORT = 9000;
 
         internal TcpClient m_client;
         internal NetworkStream m_netstream;
 
         private byte[] m_recvstream;
-        private byte[] m_sendstream;     
+        private byte[] m_sendstream;
 
         private packetId_t m_newSendID;
         private packetId_t m_newRecvID;
@@ -55,7 +56,9 @@ namespace Net
 
             IsSignedIn = false;
 
-            m_client = new TcpClient(SERVER_IP, SERVER_PORT);
+            m_client = new TcpClient();
+            IPEndPoint serverAddr = new IPEndPoint(IPAddress.Parse(SERVER_IP), SERVER_PORT);
+            m_client.Connect(serverAddr);
             m_netstream = m_client.GetStream();
             m_recvstream = new byte[PacketBase.stream_capacity];
             m_sendstream = new byte[PacketBase.stream_capacity];
@@ -73,16 +76,16 @@ namespace Net
 
         public void __Finalize()
         {
-            m_netstream.Close();            
-            m_client.Close();            
+            m_netstream.Close();
+            m_client.Close();
         }
 
         public void ChangeState(INetStateBase next_stage)
         {
             m_current_state = next_stage;
         }
-               
-        
+
+
 
         public void Recv()
         {
@@ -126,7 +129,7 @@ namespace Net
         }
         public void OnRecvComplete(RecvPacket recvPacket)
         {
-            m_current_state.OnRecvComplete(recvPacket);            
+            m_current_state.OnRecvComplete(recvPacket);
         }
 
         public void SendReq(SendPacket sendPacket)
@@ -154,31 +157,28 @@ namespace Net
 
             // set 'total size' to m_sendstream
             packetSize_t total_size = 0;
-            total_size = sizeof(packetSize_t) + sizeof(packetId_t) + encrypted_packetsize;
+            total_size = sizeof(packetId_t) + encrypted_packetsize;
             byte[] total_size_bytes = BitConverter.GetBytes(total_size);
             Array.Copy(total_size_bytes, 0, m_sendstream, sendstream_head, sizeof(packetSize_t));
-
             sendstream_head += sizeof(packetSize_t);
 
             // set 'id' to m_sendstream
             packetId_t id = m_newSendID++;
             byte[] id_bytes = BitConverter.GetBytes(id);
             Array.Copy(id_bytes, 0, m_sendstream, sendstream_head, sizeof(packetId_t));
-
             sendstream_head += sizeof(packetId_t);
 
             // set 'Encrypted data' to m_sendstream
             Array.Copy(sendPacket.m_stream, 0, m_sendstream, sendstream_head, encrypted_packetsize);
             sendstream_head += encrypted_packetsize;
 
-
             // send sendstream
-            m_netstream.Write(m_sendstream, 0, total_size);
+            m_netstream.Write(m_sendstream, 0, sizeof(int) + total_size);
 
             OnSendComplete();
         }
 
-        
+
         public void OnSendComplete()
         {
             m_current_state.OnSendComplete();
