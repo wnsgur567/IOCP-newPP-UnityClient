@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Net;
 using System;
 
@@ -10,8 +9,9 @@ namespace Net
     {
         NetSession session;
         INetStateBase.State m_state;
-        public NetSession Owner { 
-            get => session; 
+        public NetSession Owner
+        {
+            get => session;
             set { session = value; }
         }
 
@@ -52,14 +52,13 @@ namespace Net
 
         public void OnRecvComplete(RecvPacket recvpacket)
         {
-            // unpack recvpacket data
-            byte[] protocol_bytes;
-            recvpacket.Read(out protocol_bytes, sizeof(Protocol));
-            Protocol protocol = (Protocol)BitConverter.ToInt64(protocol_bytes, 0);
+            // get protocol 
+            Protocol protocol;
+            recvpacket.Read<Int64, Protocol>(out protocol);
 
-            byte[] result_bytes;
-            recvpacket.Read(out result_bytes, sizeof(Result));
-            Result result = (Result)BitConverter.ToInt32(result_bytes, 0);
+            // get sign result
+            Result result;
+            recvpacket.Read<Int32, Result>(out result);
 
             // call functions by protocol
             switch (protocol)
@@ -81,7 +80,7 @@ namespace Net
                 case Result.Success_SingIn:
                     Owner.IsSignedIn = true;
                     Owner.ChangeState(Owner.m_charselect_state);
-                    DebugConsoleGUIConstants.ShowMsg_Req("Change State!!");                    
+                    DebugConsoleGUIConstants.ShowMsg_Req("Change State!!");
                     break;
                 case Result.Success_SignOut:
                     Owner.IsSignedIn = false;
@@ -93,7 +92,7 @@ namespace Net
                 default:
 
                     break;
-            }            
+            }
         }
 
         public void OnSendComplete()

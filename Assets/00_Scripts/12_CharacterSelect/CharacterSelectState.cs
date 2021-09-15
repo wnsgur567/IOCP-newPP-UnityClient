@@ -39,18 +39,15 @@ namespace Net
         public void OnRecvComplete(RecvPacket recvpacket)
         {
             // unpack recvpacket data
-            byte[] protocol_bytes;
-            recvpacket.Read(out protocol_bytes, sizeof(Protocol));
-            Protocol protocol = (Protocol)BitConverter.ToInt64(protocol_bytes, 0);
+            Protocol protocol;
+            recvpacket.Read<Int64, Protocol>(out protocol);
 
-            byte[] result_bytes;
-            recvpacket.Read(out result_bytes, sizeof(Result));
-            Result result = (Result)BitConverter.ToInt32(result_bytes, 0);
-
+            Result result;
+            recvpacket.Read<Int32, Result>(out result);
             // TODO : ...
 
 
-           
+
         }
 
         public void OnSendComplete()

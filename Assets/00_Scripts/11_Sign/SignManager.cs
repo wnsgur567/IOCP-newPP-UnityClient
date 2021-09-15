@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using UnityEngine;
 
@@ -17,45 +18,40 @@ namespace NetApp
         }
 
         // -------------------- send process ----------------------//
-        public void SignInProcess(string id, string pw)
+        public void SignInProcess(SignInfo inSignInfo)
         {
             Protocol protocol = Protocol.SignIn;
             Net.SendPacket sendpacket = new Net.SendPacket();
             sendpacket.__Initialize();
 
-
             // write to sendpacket's stream
-            sendpacket.Write(BitConverter.GetBytes((Int64)protocol), sizeof(Protocol));
-            sendpacket.Write(id);
-            sendpacket.Write(pw);
-
+            sendpacket.Write((Int64)protocol);
+            sendpacket.Write(inSignInfo);
             Net.NetworkManager.Instance.Send(sendpacket);
         }
 
-        public void SignOutProcess()
+        public void SignOutProcess(SignInfo inSignInfo)
         {
             Protocol protocol = Protocol.SignOut;
 
             Net.SendPacket sendpacket = new Net.SendPacket();
             sendpacket.__Initialize();
 
-
             // write to sendpacket's stream
-            sendpacket.Write(BitConverter.GetBytes((Int64)protocol), sizeof(Protocol));
+            sendpacket.Write((Int64)protocol);
+            //Net.NetworkManager.Instance.Send(sendpacket);
         }
 
-        public void SignUpProcess(string id, string pw)
+        public void SignUpProcess(SignInfo inSignInfo)
         {
             Protocol protocol = Protocol.SignUp;
 
             Net.SendPacket sendpacket = new Net.SendPacket();
             sendpacket.__Initialize();
 
-
             // write to sendpacket's stream
-            sendpacket.Write(BitConverter.GetBytes((Int64)protocol), sizeof(Protocol));
-            sendpacket.Write(id);
-            sendpacket.Write(pw);
+            sendpacket.Write((Int64)protocol);
+            sendpacket.Write(inSignInfo);            
 
             Net.NetworkManager.Instance.Send(sendpacket);
         }
@@ -89,13 +85,8 @@ namespace NetApp
 
         public void OnSignIn(Result result, Net.RecvPacket packet)
         {
-            byte[] msglen_bytes;
-            packet.Read(out msglen_bytes, sizeof(int));
-            int msg_len = BitConverter.ToInt32(msglen_bytes, 0);
-
-            byte[] msg_bytes;
-            packet.Read(out msg_bytes, msg_len);
-            string msg = Encoding.Unicode.GetString(msg_bytes);
+            string msg;
+            packet.Read(out msg);
 
             DebugConsoleGUIController.Instance.ShowMsg(msg);
 

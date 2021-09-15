@@ -86,23 +86,15 @@ public class SignGUIController : MonoBehaviour, SignPanelInput.ISignKeysActions
     #region Button Callback
     public void __OnSignInButtonCallback()
     {
-        string id;
-        string pw;
-
-        id = m_id_inputfield.text;
-        pw = m_pw_inputfield.text;
-
-        NetApp.SignManager.Instance.SignInProcess(id, pw);
+        SignInfo info = new SignInfo();
+        info.SetInfo(m_id_inputfield.text, m_pw_inputfield.text);
+        NetApp.SignManager.Instance.SignInProcess(info);
     }
     public void __OnSignUpButtonCallback()
     {
-        string id;
-        string pw;
-
-        id = m_id_inputfield.text;
-        pw = m_pw_inputfield.text;
-
-        NetApp.SignManager.Instance.SignUpProcess(id, pw);
+        SignInfo info = new SignInfo();
+        info.SetInfo(m_id_inputfield.text, m_pw_inputfield.text);
+        NetApp.SignManager.Instance.SignUpProcess(info);
     }
 
     public void __OnFindIDButtonCallback()
