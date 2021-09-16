@@ -104,6 +104,69 @@ Port    : 3306
     
     5)    기존 과정에 이식중... 
 
+>>>>>>>>>> 2021-09-16
+    1) 위 내용 이식 완료
+    2) sql 관련 작업을 실시간으로 변경
+    3) character state 정의
+    4) protocol check 를 bit 연산으로 변경 ( & )
+    5) 오즈마 레이드 관련한 Idea.txt 추가
+
+
+    class Session 의 정보
+        session id - 새션이 생성 되는 시점에 부여
+        user id -  id pw 에 대응되는 고유 id (user 식별 id) : 
+                    sign state 에서 로그인시 결정됨
+        vector<chraracter info> - user id 로 검색하여 db에서 정보를 불러와 저장해둠
+        current character info - 현재 선택된 character , character select state 에서 결정됨
+        village - character 가 선택되면 캐릭터를 스폰시킬 장소 , village state 가 onchanged 될 때 결정 됨
+        village sector ptr - village 에서 현재 섹터에 관한 ptr
+        dungeion - 클라이언트에서 특정 던전 요청이 들어오면 , dungeion state 가 onchanged 될 때 결정 됨
+        dungeion room ptr - dungeion 에서 현재 room 에 관한 ptr
+
+        ...각 state 관련 포인터 및 현제 current 포인터
+
+    class game
+        vector < village > - game 이 initialize 될때 모든  village 들을 초기화 시킴    
+              -> 대응되는 village manager 필요 할 듯
+        list < dungeon > - dungeon  요청이 들어오면 생성하기 (얘도 object pooling 해놓는게 좋을듯)
+             -> 대응되는 dungeion manager 필요 할 듯
+
+    // RWLOCK 은 무엇인가? : https://hodongman.github.io/2020/12/01/RWLock.html 
+    //      최적화 단계임으로 추후로 미룸
+    // 섹터 관련 개념 정리 블로그 : https://popcorntree.tistory.com/84?category=813524
+    // 게임 서버 프로그래밍 항목의 '시야리스트 view list' 글 참조
+    // 다면 블로그 글보다는 섹터 구역을 세분화함
+
+    1 2 3
+    4 5 6   
+    7 8 9
+
+    5번 구획에 현재 자신의 캐릭터가 존재한다고 가정하면....
+    8방향의 모든 정보를 받게 됨
+    다만 실제 시야는 5번과 주면 섹터의 절반 정도
+
+    class sector
+        vector2 sector grid      모든 섹션 구영해서 해당 section의 grid
+        vector2 sector position  모든 섹션구역에서 해당 section 의 위치를 나타낼 position 값
+
+        list < player (character) >  해당 구역에 존재하는 모든 player ptr list  
+            enter section 및 leave section 함수를 통해 리스트에 추가되거나 제거됨
+        monster.... 일단 village 에서는 없으니 구현 할 필요 없을듯, 던전은 룸 형식이라 다 넘겨버려도 무리 없어 보임
+
+        fuction SendPacket 을 통해 해당 sector에 있는 모든 player 들에게 관련 정보를 한번에 떤지기
+            필요 정보는 해당 위치의 sector 뿐만 아니라 8방향에 있는 모든 섹터들의 정보를 같이 보내야 함 (시야 범위)
+        
+    class Sector manager
+        vector vector x,y grid 로 관리할 sector 관리 2차원 벡터 , sector 의 포인터를 가지고 있음
+        1. 단순 Action 관련 함수 (섹터 내에서 지지고 복고 ... 이동, 스킬, 등 모든 움직임인 경우)
+        2. 이동시 해당 섹터를 벗어나는 경우 (이동한 섹터에 대한 정보 update 가 필요함)
+
+
+    Q. 그럼 Sector 에서 sendpacket 의 주기는 어떻게 되는게 옳은가?
+
+            
+
+
 
     sector를 나눌때 각 섹타가 가지고 있을 포인터의 자료구조는 기본적으로 linked list 기반으로 (거리가 자주 변할 테니 삽입 삭제가 용의하도록)
     거리별로 정렬이 필요한 경우는 set 을 고려 (트리구조니까 정렬해야 될 경우...)
@@ -115,7 +178,6 @@ Port    : 3306
 
     server 쪽에 sendbytes 와 recvbytes 디버그 용으로 찍어둡시다
 
->>>>>>>>>> 
 >>>>>>>>>> 
 >>>>>>>>>> 
 >>>>>>>>>> 
