@@ -16,14 +16,15 @@ namespace Net
             Chat = 100,
         }
 
-        public NetSession Owner { get; set; }
-        public State SessionState { get; }
+        public abstract NetSession Owner { get; set; }
+        public abstract State SessionState { get; }
 
-        public void OnRecvComplete(RecvPacket recvpacket);
-        public void OnSendComplete();
+        public abstract void OnRecvComplete(RecvPacket recvpacket);
+        public abstract void OnSendComplete();
+        public abstract void OnChanged();
 
-        public void OccuredRecvException();
-        public void OccuredSendException();
+        public abstract void OccuredRecvException();
+        public abstract void OccuredSendException();
 
     }
 }

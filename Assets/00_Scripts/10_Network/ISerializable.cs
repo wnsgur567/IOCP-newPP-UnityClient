@@ -13,4 +13,5 @@ namespace Net
         abstract int DeSerialize(MemoryStream stream);
     }
 
+
 }

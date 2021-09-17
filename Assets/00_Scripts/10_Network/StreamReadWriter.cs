@@ -27,7 +27,7 @@ namespace Net
             writestream.Write(bytes, 0, bytes.Length);
 
             return bytes.Length;
-        }       
+        }
 
         #region Read fundamental
         public static int ReadFromBinStream(MemoryStream readstream, out char item)
@@ -332,9 +332,10 @@ namespace Net
                 item = (TItem)((object)retval);
                 return size;
             }
-           
+
             throw new NotImplementedException();
         }
+
 
 
         // collection write
@@ -495,6 +496,119 @@ namespace Net
         public static int ReadFromBinStream(MemoryStream readstream, ISerializable serializable)
         {
             return serializable.DeSerialize(readstream);
+        }
+
+        public static int ReadFromBinStreamSerializable<Derived>(MemoryStream readstream, out Derived item) where Derived : ISerializable, new()
+        {
+            item = new Derived();
+            return item.DeSerialize(readstream);
+        }
+        // 위에 대응되는 직렬화 함수들
+        // read list
+        public static int ReadFromBinStreamSerializable<Derived>(MemoryStream readstream, out List<Derived> collection) where Derived : ISerializable, new()
+        {
+            int read_size = 0;
+
+            int collection_len;
+            read_size = ReadFromBinStream(readstream, out collection_len);
+
+            collection = new List<Derived>(collection_len);
+            for (int i = 0; i < collection_len; i++)
+            {
+                Derived outItem;
+                read_size += ReadFromBinStreamSerializable(readstream, out outItem);
+                collection.Add(outItem);
+            }
+            return read_size;
+        }
+
+        // read linked list
+        public static int ReadFromBinStreamSerializable<Derived>(MemoryStream readstream, out LinkedList<Derived> collection) where Derived : ISerializable, new()
+        {
+            int read_size = 0;
+
+            int collection_len;
+            read_size = ReadFromBinStream(readstream, out collection_len);
+
+            collection = new LinkedList<Derived>();
+            for (int i = 0; i < collection_len; i++)
+            {
+                Derived outItem;
+                read_size += ReadFromBinStreamSerializable(readstream, out outItem);
+                collection.AddLast(outItem);
+            }
+            return read_size;
+        }
+
+        // read hashset
+        public static int ReadFromBinStreamSerializable<Derived>(MemoryStream readstream, out HashSet<Derived> collection) where Derived : ISerializable, new()
+        {
+            int read_size = 0;
+
+            int collection_len;
+            read_size = ReadFromBinStream(readstream, out collection_len);
+
+            collection = new HashSet<Derived>();
+            for (int i = 0; i < collection_len; i++)
+            {
+                Derived outItem;
+                read_size += ReadFromBinStreamSerializable(readstream, out outItem);
+                collection.Add(outItem);
+            }
+            return read_size;
+        }
+
+        // read sortedset
+        public static int ReadFromBinStreamSerializable<Derived>(MemoryStream readstream, out SortedSet<Derived> collection) where Derived : ISerializable, new()
+        {
+            int read_size = 0;
+
+            int collection_len;
+            read_size = ReadFromBinStream(readstream, out collection_len);
+
+            collection = new SortedSet<Derived>();
+            for (int i = 0; i < collection_len; i++)
+            {
+                Derived outItem;
+                read_size += ReadFromBinStreamSerializable(readstream, out outItem);
+                collection.Add(outItem);
+            }
+            return read_size;
+        }
+
+        // read key value pair
+        public static int ReadFromBinStreamSerializable<TKey, TDerivedValue>(MemoryStream readstream, out KeyValuePair<TKey, TDerivedValue> collection) where TKey : IConvertible where TDerivedValue : ISerializable, new()
+        {
+            int read_size = 0;
+
+            TKey outKey;
+            TDerivedValue outValue;
+            read_size += ReadFromBinStream(readstream, out outKey);
+            read_size += ReadFromBinStreamSerializable(readstream, out outValue);
+
+            collection = new KeyValuePair<TKey, TDerivedValue>(outKey, outValue);
+
+            return read_size;
+        }
+
+        public static int ReadFromBinStreamSerializable<TKey, TDerivedValue>(MemoryStream readstream, out Dictionary<TKey, TDerivedValue> collection) where TKey : IConvertible where TDerivedValue : ISerializable, new()
+        {
+            int read_size = 0;
+
+            int collection_len;
+            read_size = ReadFromBinStream(readstream, out collection_len);
+
+            collection = new Dictionary<TKey, TDerivedValue>(collection_len);
+            for (int i = 0; i < collection_len; i++)
+            {
+                TKey outKey;
+                TDerivedValue outValue;
+                read_size += ReadFromBinStream(readstream, out outKey);
+                read_size += ReadFromBinStreamSerializable(readstream, out outValue);
+
+                collection.Add(outKey, outValue);
+            }
+            return read_size;
         }
     }
 }

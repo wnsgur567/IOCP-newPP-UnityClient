@@ -11,3 +11,10 @@
   dummy party 에는 dummy character 3명이 존재할 거고 이 정보를 뿌리는 방식으로
   dummy character는 모습과 행동에 관한 정보만 담고
         -> 일단 가능하면 16인 까지는 동시에 보이는게 가능함
+
+
+
+// sql 과 server 와 자동으로 대응되도록
+public:
+		//@ <name=testval type=int32 default=2  >
+		int m_testval;

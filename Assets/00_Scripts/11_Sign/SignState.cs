@@ -53,7 +53,7 @@ namespace Net
         public void OnRecvComplete(RecvPacket recvpacket)
         {
             // get protocol 
-            Protocol protocol;
+            Protocol protocol;            
             recvpacket.Read<Int64, Protocol>(out protocol);
 
             // get sign result
@@ -80,7 +80,7 @@ namespace Net
                 case Result.Success_SingIn:
                     Owner.IsSignedIn = true;
                     Owner.ChangeState(Owner.m_charselect_state);
-                    DebugConsoleGUIConstants.ShowMsg_Req("Change State!!");
+                    
                     break;
                 case Result.Success_SignOut:
                     Owner.IsSignedIn = false;
@@ -99,6 +99,10 @@ namespace Net
         {
 
         }
+
+        
+        public void OnChanged()
+        { }
 
 
         #region Exception

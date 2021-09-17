@@ -84,6 +84,7 @@ namespace Net
         public void ChangeState(INetStateBase next_stage)
         {
             m_current_state = next_stage;
+            DebugConsoleGUIConstants.ShowMsg_Req("Change State!!");
         }
 
 

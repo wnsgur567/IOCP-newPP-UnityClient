@@ -5,9 +5,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class SignGUIController : MonoBehaviour, SignPanelInput.ISignKeysActions
+public class SignGUIController : Singleton<SignGUIController>, SignPanelInput.ISignKeysActions
 {
     [SerializeField] Button m_dummy;
+
+    [SerializeField] Image m_root_panel;
 
     [SerializeField] TMPro.TMP_InputField m_id_inputfield;
     [SerializeField] TMPro.TMP_InputField m_pw_inputfield;
@@ -60,6 +62,15 @@ public class SignGUIController : MonoBehaviour, SignPanelInput.ISignKeysActions
     {
         m_next_tab_dic.Clear();
         m_input_sys.Disable();
+    }
+
+    public void __On()
+    {
+        m_root_panel.gameObject.SetActive(true);
+    }
+    public void __OFF()
+    {
+        m_root_panel.gameObject.SetActive(false);
     }
 
     public void OnTab(InputAction.CallbackContext context)

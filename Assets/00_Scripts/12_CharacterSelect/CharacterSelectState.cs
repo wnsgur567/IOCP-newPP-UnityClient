@@ -27,14 +27,20 @@ namespace Net
         {
             None = 0,
 
-            // flags...
+            AllCharacterInfo = 1 << 0,
+            CharacterSelect = 1 << 1,
+            SignOut = 1 << 2,
         }
         public enum Result : Int32
         {
             None = 0,
 
-            // start 2000
+            NoData = 1 << 0,
+            CharaterInfos = 1 << 1,
+            Success_CharacterSelect = 1 << 2,
+            UndefinedCharacter = 1 << 3,
         }
+
 
         public void OnRecvComplete(RecvPacket recvpacket)
         {
@@ -44,15 +50,45 @@ namespace Net
 
             Result result;
             recvpacket.Read<Int32, Result>(out result);
-            // TODO : ...
 
+            switch (protocol)
+            {                
+                case Protocol.AllCharacterInfo:                    
+                case Protocol.CharacterSelect:                   
+                case Protocol.SignOut:
+                    CharacterSelectConstatnts.CallbackReq(protocol, result, recvpacket);
+                    break;
+                default:
+                    // throw exception
+                    break;
+            }
 
-
+            // result 따라 state 변환 시키기
+            switch (result)
+            {
+                case Result.None:
+                    break;
+                case Result.NoData:
+                    break;
+                case Result.CharaterInfos:
+                    break;
+                case Result.Success_CharacterSelect:
+                    break;
+                case Result.UndefinedCharacter:
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void OnSendComplete()
         {
 
+        }
+
+        public void OnChanged()
+        {
+            Debug.Log("character select state start");
         }
 
         public void OccuredRecvException()
@@ -64,5 +100,7 @@ namespace Net
         {
             throw new System.NotImplementedException();
         }
+
+        
     }
 }

@@ -39,9 +39,9 @@ namespace Net
         public void GetDataFromNetStream(NetworkStream recvstream, int copy_size)
         {
             m_stream.SetLength(copy_size);
-            recvstream.Read(m_stream.GetBuffer(), 0, copy_size);            
+            recvstream.Read(m_stream.GetBuffer(), 0, copy_size);
             m_stream_size = copy_size;
-            m_stream.Position = 0;            
+            m_stream.Position = 0;
         }
 
         public int Read<T, TEnum>(out TEnum item) where T : IConvertible where TEnum : Enum
@@ -58,9 +58,29 @@ namespace Net
         {
             return StreamReadWriter.ReadFromBinStream(m_stream, out item);
         }
+
+        // 이미 object 가 할당된 곳에 받아올 경우
+        public int Read(ISerializable serializable)
+        {
+            return StreamReadWriter.ReadFromBinStream(m_stream, serializable);
+        }
+        // 새로 object 를 생성해서 받아와야 될 경우
+        public int ReadSerializable<T>(out T derived) where T : ISerializable, new()
+        {
+            derived = new T();
+            return StreamReadWriter.ReadFromBinStreamSerializable(m_stream, out derived);
+        }
+        public int ReadSerializabel<T>(out List<T> derived) where T : ISerializable, new()
+        {
+            return StreamReadWriter.ReadFromBinStreamSerializable(m_stream, out derived);
+        }
         public int Read(out string str)
         {
             return StreamReadWriter.ReadFromBinStream(m_stream, out str);
+        }
+        public int Read<T>(out List<T> item_list) where T : IConvertible
+        {
+            return StreamReadWriter.ReadFromBinStream(m_stream, out item_list);
         }
 
         public void UnPacking()

@@ -39,7 +39,7 @@ namespace NetApp
 
             // write to sendpacket's stream
             sendpacket.Write((Int64)protocol);
-            //Net.NetworkManager.Instance.Send(sendpacket);
+            Net.NetworkManager.Instance.Send(sendpacket);
         }
 
         public void SignUpProcess(SignInfo inSignInfo)
@@ -97,6 +97,8 @@ namespace NetApp
                 case Result.WrongPW:
                     break;
                 case Result.Success_SingIn:
+                    SignGUIController.Instance.__OFF();
+                    CharacterSelectGUIController.Instance.__ON();
                     break;
 
                 default:
@@ -106,6 +108,9 @@ namespace NetApp
         }
         public void OnSignOut(Result result, Net.RecvPacket packet)
         {
+            string msg;
+            packet.Read(out msg);
+
             switch (result)
             {
                 case Result.Success_SignOut:
@@ -118,6 +123,9 @@ namespace NetApp
         }
         public void OnSignUp(Result result, Net.RecvPacket packet)
         {
+            string msg;
+            packet.Read(out msg);
+
             switch (result)
             {
                 case Result.ExistID:
@@ -133,6 +141,9 @@ namespace NetApp
 
         public void OnDeleteAccount(Result result, Net.RecvPacket packet)
         {
+            string msg;
+            packet.Read(out msg);
+
             switch (result)
             {
                 case Result.WrongPW:

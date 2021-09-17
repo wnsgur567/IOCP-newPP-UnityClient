@@ -161,6 +161,10 @@ Port    : 3306
         1. 단순 Action 관련 함수 (섹터 내에서 지지고 복고 ... 이동, 스킬, 등 모든 움직임인 경우)
         2. 이동시 해당 섹터를 벗어나는 경우 (이동한 섹터에 대한 정보 update 가 필요함)
 
+>>>>>>>>>> 
+    1) character select state 까지 완료
+    2) village 제작 중 , 위에 적어둔 섹터 개념 도입 중
+    3) sign state 내부 함수 소폭 수정 필요 (character state 처럼)
 
     Q. 그럼 Sector 에서 sendpacket 의 주기는 어떻게 되는게 옳은가?
 
@@ -178,7 +182,7 @@ Port    : 3306
 
     server 쪽에 sendbytes 와 recvbytes 디버그 용으로 찍어둡시다
 
->>>>>>>>>> 
+
 >>>>>>>>>> 
 >>>>>>>>>> 
 >>>>>>>>>> 
