@@ -142,7 +142,7 @@ namespace Net
 
         // return total send size for network send(networkstream.write)
         // total send size = total size + packet id size + encrypted data size
-        public int Packing(byte[] sendstream, int packet_id)
+        public int Packing(byte[] sendstream, UInt32 packet_id)
         {
             // encryption;
             int encrypted_data_size = CipherManager.Encryption(m_stream.GetBuffer(),

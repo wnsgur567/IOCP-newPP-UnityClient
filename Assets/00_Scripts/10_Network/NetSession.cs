@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Net.Sockets;
 
-using gid32_t = System.Int32;
-using gid64_t = System.Int64;
+using gid32_t = System.UInt32;
+using gid64_t = System.UInt64;
 using gsize32_t = System.UInt32;
 using gsize64_t = System.UInt64;
 using System;

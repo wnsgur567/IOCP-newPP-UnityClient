@@ -17,10 +17,10 @@ namespace NetApp
         // -------------------- send process ----------------------//
         public void CharacterSelectedProcess(CharacterSelectInfo inCharInfo)
         {
-            Protocol protocol = Protocol.CharacterSelect;
             Net.SendPacket sendpacket = new Net.SendPacket();
             sendpacket.__Initialize();
 
+            Protocol protocol = Protocol.CharacterSelect;
             sendpacket.Write(((int)protocol));
             sendpacket.Write(inCharInfo);
 
