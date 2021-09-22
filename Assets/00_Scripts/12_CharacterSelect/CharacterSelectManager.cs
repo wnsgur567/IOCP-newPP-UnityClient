@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace NetApp
             sendpacket.__Initialize();
 
             Protocol protocol = Protocol.CharacterSelect;
-            sendpacket.Write(((int)protocol));
+            sendpacket.Write(((Int64)protocol));
             sendpacket.Write(inCharInfo);
 
             Net.NetworkManager.Instance.Send(sendpacket);
@@ -36,9 +37,9 @@ namespace NetApp
         // -------------------- On Recv process ----------------------//
         private void CallbackCheck()
         {
-            while (false == Net.CharacterSelectConstatnts.IsEmpty())
+            while (false == Net.CharacterSelectConstants.IsEmpty())
             {
-                var char_data = Net.CharacterSelectConstatnts.Dequeue();
+                var char_data = Net.CharacterSelectConstants.Dequeue();
                 switch (char_data.protocol)
                 {
                     case Protocol.AllCharacterInfo:
@@ -54,6 +55,8 @@ namespace NetApp
             }
         }
 
+        // 키릭터 선택 화면에 들오왔을 경우
+        // 현재 유저에 대한 모든 캐릭터를 서버로부터 불러옴
         private void OnAllCharacterInfo(Result result, Net.RecvPacket packet)
         {
             if (result == Result.NoData)
@@ -75,16 +78,33 @@ namespace NetApp
             }
         }
 
+        // 유저가 캐릭터 선택후 
+        // 선택한 결과를 서버로부터 불러옴
         private void OnCharacterSelect(Result result, Net.RecvPacket packet)
         {
             switch (result)
             {
+                // 캐릭터 선택 완료
+                // village state 로 이동 
                 case Result.Success_CharacterSelect:
+                    {
+                        string msg;
+                        packet.Read(out msg);
+                        DebugConsoleGUIController.Instance.ShowMsg(msg);
+                    }
                     break;
+                // id 재확인 필요
                 case Result.UndefinedCharacter:
+                    {
+                        string msg;
+                        packet.Read(out msg);
+                        DebugConsoleGUIController.Instance.ShowMsg(msg);
+                    }
                     break;
             }
         }
+
+        // sign in 하기 전 상태로 이동
         private void OnSignOut(Result result, Net.RecvPacket packet)
         {
             // not implement

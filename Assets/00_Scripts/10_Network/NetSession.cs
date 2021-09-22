@@ -37,6 +37,7 @@ namespace Net
         INetStateBase m_current_state;
         internal SignState m_sign_state;
         internal CharacterSelectState m_charselect_state;
+        internal VillageState m_village_state;
 
         public NetSession()
         {
@@ -69,6 +70,7 @@ namespace Net
         {
             m_sign_state = new SignState(this);
             m_charselect_state = new CharacterSelectState(this);
+            m_village_state = new VillageState(this);
 
             m_current_state = m_sign_state;
         }
@@ -84,7 +86,8 @@ namespace Net
         public void ChangeState(INetStateBase next_stage)
         {
             m_current_state = next_stage;
-            DebugConsoleGUIConstants.ShowMsg_Req("Change State!!");
+            m_current_state.OnChanged();
+            //DebugConsoleGUIConstants.ShowMsg_Req("Change State!!");
         }
 
 

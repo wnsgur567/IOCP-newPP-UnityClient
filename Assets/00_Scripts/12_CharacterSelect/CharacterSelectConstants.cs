@@ -6,7 +6,7 @@ namespace Net
     using Protocol = CharacterSelectState.Protocol;
     using Result = CharacterSelectState.Result;
 
-    public class CharacterSelectConstatnts
+    public class CharacterSelectConstants
     {
         public struct CharacterSelectData
         {

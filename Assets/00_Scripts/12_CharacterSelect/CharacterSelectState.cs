@@ -27,7 +27,7 @@ namespace Net
         {
             None = 0,
 
-            AllCharacterInfo = 1 << 0,
+            AllCharacterInfo = 1 << 0, 
             CharacterSelect = 1 << 1,
             SignOut = 1 << 2,
         }
@@ -55,26 +55,26 @@ namespace Net
             {                
                 case Protocol.AllCharacterInfo:                    
                 case Protocol.CharacterSelect:                   
-                case Protocol.SignOut:
-                    CharacterSelectConstatnts.CallbackReq(protocol, result, recvpacket);
+                case Protocol.SignOut:                    
                     break;
                 default:
                     // throw exception
                     break;
             }
 
-            // result 따라 state 변환 시키기
+            // manager 에게 넘길 queue 에 등록
             switch (result)
             {
-                case Result.None:
-                    break;
-                case Result.NoData:
-                    break;
                 case Result.CharaterInfos:
+                    CharacterSelectConstants.CallbackReq(protocol, result, recvpacket);
+                    break;
+                case Result.None:
+                case Result.NoData:
+                case Result.UndefinedCharacter:
                     break;
                 case Result.Success_CharacterSelect:
-                    break;
-                case Result.UndefinedCharacter:
+                    CharacterSelectConstants.CallbackReq(protocol, result, recvpacket);
+                    Owner.ChangeState(Owner.m_village_state);
                     break;
                 default:
                     break;

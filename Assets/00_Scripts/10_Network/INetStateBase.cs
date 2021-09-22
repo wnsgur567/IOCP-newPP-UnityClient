@@ -12,6 +12,7 @@ namespace Net
 
             Sign = 1,
             CharacterSelect = 2,
+            Village,
 
             Chat = 100,
         }
