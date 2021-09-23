@@ -70,7 +70,7 @@ namespace Net
             derived = new T();
             return StreamReadWriter.ReadFromBinStreamSerializable(m_stream, out derived);
         }
-        public int ReadSerializabel<T>(out List<T> derived) where T : ISerializable, new()
+        public int ReadSerializable<T>(out List<T> derived) where T : ISerializable, new()
         {
             return StreamReadWriter.ReadFromBinStreamSerializable(m_stream, out derived);
         }

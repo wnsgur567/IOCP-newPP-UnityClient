@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace NetApp
 {
@@ -10,6 +11,8 @@ namespace NetApp
 
     public class CharacterSelectManager : Singleton<CharacterSelectManager>
     {
+        [SerializeField] Image CharacterSelectPanel;
+
         private void Update()
         {
             CallbackCheck();
@@ -68,7 +71,7 @@ namespace NetApp
             else
             {
                 List<CharacterSelectInfo> info_list = new List<CharacterSelectInfo>();
-                packet.ReadSerializabel(out info_list);
+                packet.ReadSerializable(out info_list);
 
                 CharacterSelectGUIController.Instance.SetCharacterInfomation(info_list);
 
@@ -91,6 +94,7 @@ namespace NetApp
                         string msg;
                         packet.Read(out msg);
                         DebugConsoleGUIController.Instance.ShowMsg(msg);
+                        CharacterSelectPanel.gameObject.SetActive(false);
                     }
                     break;
                 // id 재확인 필요

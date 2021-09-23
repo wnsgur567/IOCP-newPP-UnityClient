@@ -29,16 +29,19 @@ namespace Net
         {
             None = 0,
 
-            VillageInit = 1 << 0,                       // village 정보 전송
+            //VillageInit = 1 << 0,                     // village 정보 전송
             EnterVillage = 1 << 1,                      // village 입장
-            ExitVillage = 1 << 2,                       // village 퇴장
-            PlayerAction = 1 << 3,                      // 이동하지 않는 모든 움직임
-            PlayerMove = 1 << 4,                        // 이동하는 움직임
-            PlayerMoveAndAction = (1 << 3) | (1 << 4),	// action 과 move 가 같이 일어날 수 있음
+            ExitVillage = 1 << 2,						// village 퇴장
+
+            FirstInit = 1 << 20,            // village 입장 시 초기 정보들
+            FirstInit_Others = 1 << 21,     // village 입장 시 주변 player 정보를 가져옴
+            PlayerAction = 1 << 22,                                 // 이동하지 않는 모든 움직임
+            PlayerMove = 1 << 23,                                   // 이동하는 움직임
+            PlayerMoveAndAction = (PlayerAction) | (PlayerMove),	// action 과 move 가 같이 일어날 수 있음
         }
         public enum Result : Int32
         {
-
+            None,
         }
 
         public void OccuredRecvException()
@@ -62,12 +65,21 @@ namespace Net
             Protocol protocol;
             recvpacket.Read<Int64, Protocol>(out protocol);
 
-            Result result;
-            recvpacket.Read<Int32, Result>(out result);
+            Result result = Result.None;
+            // recvpacket.Read<Int32, Result>(out result);
 
             switch(protocol)
             {
-                case Protocol.VillageInit:
+                case Protocol.EnterVillage:
+                    Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
+                    break;
+                case Protocol.ExitVillage:
+
+                    break;
+                case Protocol.FirstInit:
+                    Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
+                    break;
+                case Protocol.FirstInit_Others:
                     Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
                     break;
             }
