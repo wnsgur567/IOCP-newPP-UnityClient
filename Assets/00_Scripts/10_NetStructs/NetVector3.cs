@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+[System.Serializable]
 public class NetVector3 : Net.ISerializable
 {
     UnityEngine.Vector3 vec;

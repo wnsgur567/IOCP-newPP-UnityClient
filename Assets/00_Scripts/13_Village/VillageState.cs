@@ -38,6 +38,11 @@ namespace Net
             PlayerAction = 1 << 22,                                 // 이동하지 않는 모든 움직임
             PlayerMove = 1 << 23,                                   // 이동하는 움직임
             PlayerMoveAndAction = (PlayerAction) | (PlayerMove),	// action 과 move 가 같이 일어날 수 있음
+
+            EnterInView = 1 << 24,          // 시야 범위 내로 들어온 새로운 오브젝트
+            LeaveInView = 1 << 25,			// 시야 범위 밖으로 나간 기존 오브젝트
+            EnterSection = 1 << 26,         // 새로운 섹션에 들어갈 경우 새로운 섹션에 존재하는 player들을 그려야 함
+            LeaveSection = 1 << 27          // 새로운 섹션에 들어갈 경우 기존에 그릴 필요 없는 놈들은 없에야됨
         }
         public enum Result : Int32
         {
@@ -74,12 +79,27 @@ namespace Net
                     Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
                     break;
                 case Protocol.ExitVillage:
-
+                    Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
                     break;
                 case Protocol.FirstInit:
                     Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
                     break;
                 case Protocol.FirstInit_Others:
+                    Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
+                    break;
+                case Protocol.PlayerMove:
+                    Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
+                    break;
+                case Protocol.EnterInView:
+                    Net.VillageConstants.CallbackReq(protocol,result,recvpacket);
+                    break;
+                case Protocol.LeaveInView:
+                    Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
+                    break;
+                case Protocol.EnterSection:
+                    Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
+                    break;
+                case Protocol.LeaveSection:
                     Net.VillageConstants.CallbackReq(protocol, result, recvpacket);
                     break;
             }
@@ -94,7 +114,7 @@ namespace Net
 
         public void OnSendComplete()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

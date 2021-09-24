@@ -20,6 +20,7 @@ namespace NetApp
             CallbackCheck();
         }
 
+
         // -------------------- On Recv process ----------------------//
         private void CallbackCheck()
         {
@@ -38,6 +39,21 @@ namespace NetApp
                         break;
                     case Protocol.FirstInit_Others:
                         FirstInitOthersProcess(char_data.result, char_data.recvPacket);
+                        break;
+                    case Protocol.EnterInView:
+                        EnterInViewProcess(char_data.result, char_data.recvPacket);
+                        break;
+                    case Protocol.LeaveInView:
+                        LeaveInViewProcess(char_data.result, char_data.recvPacket);
+                        break;
+                    case Protocol.PlayerMove:
+                        PlayerMoveProcess(char_data.result, char_data.recvPacket);
+                        break;
+                    case Protocol.EnterSection:
+                        EnterSectionProcess(char_data.result, char_data.recvPacket);
+                        break;
+                    case Protocol.LeaveSection:
+                        LeaveSectionProcess(char_data.result, char_data.recvPacket);
                         break;
                 }
             }
@@ -65,6 +81,8 @@ namespace NetApp
 
         }
 
+
+        // 첫 마을 입장시 자신의 플레이어 오브젝트 정보 recv 결과 처리
         private void FirstInitProcess(Result result, Net.RecvPacket packet)
         {
             PlayerInfo controll_info;
@@ -73,8 +91,56 @@ namespace NetApp
 
             // control 오브젝트 등록
             ClientGameInfoManager.Instance.SetControllObject(obj);
+            Debug.Log("aaaa");
         }
+
+        // 첫 마을 입장시 자신을 제외한 플레이어 오브젝트 정보 recv 결과 처리
         private void FirstInitOthersProcess(Result result, Net.RecvPacket packet)
+        {
+            Int32 player_count;
+            packet.Read(out player_count);
+
+            Debug.LogFormat("player count : {0}", player_count);
+
+            for (int i = 0; i < player_count; i++)
+            {
+                PlayerInfo info;
+                packet.ReadSerializable(out info);
+                // 현재 클라에게 정보가 있으면 가져오고
+                // 없으면 생성하고 가져오고 
+                var obj = NetObjectManager.Instance.GetObject<PlayerObject, PlayerInfo>(info);
+                obj.SetInfo(info);
+            }
+        }
+
+        // sector 내부에서만 이동하는 경우 (이미 있는 오브젝트임)
+        private void PlayerMoveProcess(Result result, Net.RecvPacket packet)
+        {
+            UInt64 net_id;
+            packet.Read(out net_id);
+            NetVector3 position;
+            packet.ReadSerializable(out position);
+            var obj = NetObjectManager.Instance.GetObject(net_id) as PlayerObject;
+            if (obj)
+            {
+                obj.Position = new Vector3(position.x, position.y, position.z);
+            }
+        }
+        private void EnterInViewProcess(Result result, Net.RecvPacket packet)
+        {
+            PlayerInfo info;
+            packet.ReadSerializable(out info);
+            var obj = NetObjectManager.Instance.GetObject<PlayerObject, PlayerInfo>(info);
+            obj.SetInfo(info);
+        }
+        private void LeaveInViewProcess(Result result, Net.RecvPacket packet)
+        {
+            UInt64 net_id;
+            packet.Read(out net_id);
+            NetObjectManager.Instance.Destroy(net_id);
+        }
+
+        private void EnterSectionProcess(Result result,Net.RecvPacket packet)
         {
             Int32 player_count;
             packet.Read(out player_count);
@@ -83,7 +149,23 @@ namespace NetApp
             {
                 PlayerInfo info;
                 packet.ReadSerializable(out info);
-                var obj = NetObjectManager.Instance.GetObject<PlayerObject,PlayerInfo>(info);                
+                // 현재 클라에게 정보가 있으면 가져오고
+                // 없으면 생성하고 가져오고 
+                var obj = NetObjectManager.Instance.GetObject<PlayerObject, PlayerInfo>(info);
+                obj.SetInfo(info);
+            }
+        }
+
+        private void LeaveSectionProcess(Result result,Net.RecvPacket packet)
+        {
+            Int32 player_count;
+            packet.Read(out player_count);
+
+            for (int i = 0; i < player_count; i++)
+            {
+                UInt64 net_id;
+                packet.Read(out net_id);
+                NetObjectManager.Instance.Destroy(net_id);
             }
         }
         // -------------------- On Recv process end-------------------//

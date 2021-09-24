@@ -27,9 +27,17 @@ class NetObjectManager : Singleton<NetObjectManager>
         if (false == m_netobject_map.ContainsKey(info.NetID))
             obj = Create<T, TInfo>(info);
         else
-            obj = (T)m_netobject_map[info.NetID];
+        {
+            obj = (T)m_netobject_map[info.NetID];           
+        }
 
         return obj;
+    }
+    public NetObject GetObject(UInt64 net_id)
+    {
+        if (false == m_netobject_map.ContainsKey(net_id))
+            return null;
+        return m_netobject_map[net_id];
     }
 
     private T Create<T, TInfo>(TInfo info) where T : NetObject, new() where TInfo : notnull, NetObjectInfo
@@ -42,13 +50,18 @@ class NetObjectManager : Singleton<NetObjectManager>
 
         T retObj = GameObject.Instantiate<T>(m_player_origin_obj as T);
         retObj.OnCreated(info);
+        m_netobject_map.Add(info.NetID, retObj);
+
         return retObj;
     }
 
     public void Destroy(UInt64 net_id)
     {
         if (m_netobject_map.ContainsKey(net_id))
+        {
+            GameObject.Destroy(m_netobject_map[net_id].gameObject);
             m_netobject_map.Remove(net_id);
+        }
     }
 }
 

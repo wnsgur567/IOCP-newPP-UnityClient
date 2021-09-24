@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerInfo : NetObjectInfo
 {
     CharacterSelectInfo m_character_info;
@@ -17,6 +18,16 @@ public class PlayerInfo : NetObjectInfo
     public Vector3 GetPosition()
     {
         return m_position.GetVector();
+    }
+    public NetVector3 GetNetPosition()
+    {
+        return m_position;
+    }
+    public void SetPosition(Vector3 vec)
+    {
+        m_position.x = vec.x;
+        m_position.y = vec.y;
+        m_position.z = vec.z;
     }
 
     override public int Serialize(MemoryStream stream)

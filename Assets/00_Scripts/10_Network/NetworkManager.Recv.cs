@@ -27,7 +27,7 @@ namespace Net
             var now = DateTime.Now;
             m_beforeFrameTick = now.Ticks;
 
-            long tick_span;
+            //long tick_span;
             while (false == m_thread_endFlag)
             {   // recv loop
                 try
@@ -37,17 +37,19 @@ namespace Net
                         m_session.Recv();
                     }
 
-                    // time sync
-                    now = DateTime.Now;
-                    tick_span = now.Ticks - m_beforeFrameTick;
-                    m_beforeFrameTick = now.Ticks;
+                    // 일단 즉시 반응하도록 while 돌리는걸로... 싱크 돌려서 맞추는건 아닌거 같음
 
-                    // time sync delay
-                    if (tick_span < LOOP_WAITING_TICKS)
-                    {
-                        int delay = Convert.ToInt32(LOOP_WAITING_TICKS - tick_span);
-                        Thread.Sleep(delay);
-                    }
+                    //// time sync
+                    //now = DateTime.Now;
+                    //tick_span = now.Ticks - m_beforeFrameTick;
+                    //m_beforeFrameTick = now.Ticks;
+
+                    //// time sync delay
+                    //if (tick_span < LOOP_WAITING_TICKS)
+                    //{
+                    //    int delay = Convert.ToInt32(LOOP_WAITING_TICKS - tick_span);
+                    //    Thread.Sleep(delay);
+                    //}
                 }
                 catch (Exception)
                 {

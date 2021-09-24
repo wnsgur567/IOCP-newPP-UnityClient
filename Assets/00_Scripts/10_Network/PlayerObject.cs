@@ -2,9 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerObject : NetObject
 {
-    PlayerInfo m_info;
+    [SerializeField] PlayerInfo m_info;
+
+    public Vector3 Position
+    {
+        get { return m_info.GetPosition(); }
+        set
+        {
+            m_info.SetPosition(value);
+            this.transform.position = value;
+        }
+    }
+
+    public NetVector3 NetPosition
+    {
+        get { return m_info.GetNetPosition(); }
+    }
+
 
     public void SetInfo(PlayerInfo info)
     {
@@ -19,11 +36,11 @@ public class PlayerObject : NetObject
 
     private void OnInfoChanged()
     {
-        this.transform.position = m_info.GetPosition();        
+        this.transform.position = m_info.GetPosition();
     }
 
     public override void OnCreated(NetObjectInfo initialize_info)
-    {        
+    {
         // info 로 오브젝트 초기화 시
         SetInfo(initialize_info as PlayerInfo);
         Debug.Log("Player Obj Created");
@@ -33,5 +50,5 @@ public class PlayerObject : NetObject
     public override void BeforeDestroy()
     {
         //throw new System.NotImplementedException();
-    }    
+    }
 }
