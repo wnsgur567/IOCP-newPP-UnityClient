@@ -76,10 +76,8 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
     }
 
     public void MovePlayer(Vector3 delta)
-    {
-        Debug.Log($"move vec : {delta}");
-        m_controll_object.Position = m_controll_object.Position + delta;
-        Debug.Log(m_controll_object.Position);
+    {      
+        m_controll_object.Position = m_controll_object.Position + delta;       
         player_camera.transform.position = player_camera.transform.position + delta;
     }
 
@@ -88,12 +86,12 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
         // set object
         IsObjActivated = true;
         m_controll_object = obj;
-        m_info = m_controll_object.GetInfo();
+        m_info = (PlayerInfo)m_controll_object.GetInfo();
 
         m_controll_object.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
 
         // set camera
-        var pos = obj.GetInfo().GetPosition();
+        var pos = ((PlayerInfo)obj.GetInfo()).GetPosition();
         player_camera.transform.position = new Vector3(pos.x, pos.y, player_camera.transform.position.z);
     }
 

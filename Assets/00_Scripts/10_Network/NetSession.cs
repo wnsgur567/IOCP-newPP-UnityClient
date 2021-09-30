@@ -143,11 +143,9 @@ namespace Net
 
         private void Send(SendPacket sendPacket)
         {
-            int send_size = sendPacket.Packing(m_sendstream, m_newSendID++);           
-
+            int send_size = sendPacket.Packing(m_sendstream, m_newSendID++);
             // send sendstream
             m_netstream.Write(m_sendstream, 0, send_size);
-
             OnSendComplete();
         }
 

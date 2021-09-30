@@ -8,11 +8,19 @@ public abstract class NetObjectInfo : Net.ISerializable
 {
     public enum ENetGameObjectType
     {
+        None,
 
+        PlayerCharacter,
+        Monster
     }
 
     [SerializeField] UInt64 m_net_id;
     ENetGameObjectType m_type;
+
+    protected NetObjectInfo(ENetGameObjectType type)
+    {
+        m_type = type;
+    }
 
     public UInt64 NetID { get { return m_net_id; } }
     public ENetGameObjectType NetObjType { get { return m_type; } }

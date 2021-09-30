@@ -23,18 +23,18 @@ namespace Net
             this.Owner = Owner;
         }
 
-        public enum Protocol : Int64
+        public enum Protocol : UInt64
         {
             None = 0,
 
             // flags...
-            SignIn = 1 << 0,
-            SignOut = 1 << 1,
-            SignUp = 1 << 2,
-            DeleteAccount = 1 << 3,
+            SignIn = 1UL << 0,
+            SignOut = 1UL << 1,
+            SignUp = 1UL << 2,
+            DeleteAccount = 1UL << 3,
         }
 
-        public enum Result : Int32
+        public enum Result : UInt32
         {
             None = 0,
 
@@ -54,11 +54,11 @@ namespace Net
         {
             // get protocol 
             Protocol protocol;            
-            recvpacket.Read<Int64, Protocol>(out protocol);
+            recvpacket.Read<UInt64, Protocol>(out protocol);
 
             // get sign result
             Result result;
-            recvpacket.Read<Int32, Result>(out result);
+            recvpacket.Read<UInt32, Result>(out result);
 
             // call functions by protocol
             switch (protocol)

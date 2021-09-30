@@ -23,22 +23,22 @@ namespace Net
 
         public INetStateBase.State SessionState => m_state;
 
-        public enum Protocol : Int64
+        public enum Protocol : UInt64
         {
             None = 0,
 
-            AllCharacterInfo = 1 << 0, 
-            CharacterSelect = 1 << 1,
-            SignOut = 1 << 2,
+            AllCharacterInfo = 1UL << 0, 
+            CharacterSelect = 1UL << 1,
+            SignOut = 1UL << 2,
         }
-        public enum Result : Int32
+        public enum Result : UInt32
         {
             None = 0,
 
-            NoData = 1 << 0,
-            CharaterInfos = 1 << 1,
-            Success_CharacterSelect = 1 << 2,
-            UndefinedCharacter = 1 << 3,
+            NoData = 1U << 0,
+            CharaterInfos = 1U << 1,
+            Success_CharacterSelect = 1U << 2,
+            UndefinedCharacter = 1U << 3,
         }
 
 
@@ -46,10 +46,10 @@ namespace Net
         {
             // unpack recvpacket data
             Protocol protocol;
-            recvpacket.Read<Int64, Protocol>(out protocol);
+            recvpacket.Read<UInt64, Protocol>(out protocol);
 
             Result result;
-            recvpacket.Read<Int32, Result>(out result);
+            recvpacket.Read<UInt32, Result>(out result);
 
             switch (protocol)
             {                

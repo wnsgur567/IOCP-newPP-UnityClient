@@ -9,7 +9,7 @@ public class PlayerInfo : NetObjectInfo
     CharacterSelectInfo m_character_info;
     NetVector3 m_position;
 
-    public PlayerInfo()
+    public PlayerInfo() : base(NetObjectInfo.ENetGameObjectType.PlayerCharacter)
     {
         m_character_info = new CharacterSelectInfo();
         m_position = new NetVector3();
@@ -28,6 +28,11 @@ public class PlayerInfo : NetObjectInfo
         m_position.x = vec.x;
         m_position.y = vec.y;
         m_position.z = vec.z;
+    }
+
+    public CharacterSelectInfo GetCharacterInfo()
+    {
+        return m_character_info;
     }
 
     override public int Serialize(MemoryStream stream)

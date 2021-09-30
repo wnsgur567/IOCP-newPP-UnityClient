@@ -87,10 +87,10 @@ namespace NetApp
         {
             PlayerInfo controll_info;
             packet.ReadSerializable(out controll_info);
-            var obj = NetObjectManager.Instance.GetObject<PlayerObject, PlayerInfo>(controll_info);
+            var obj = NetObjectManager.Instance.GetObject(controll_info);
 
             // control 오브젝트 등록
-            ClientGameInfoManager.Instance.SetControllObject(obj);
+            ClientGameInfoManager.Instance.SetControllObject(obj as PlayerObject);
             Debug.Log("aaaa");
         }
 
@@ -108,7 +108,7 @@ namespace NetApp
                 packet.ReadSerializable(out info);
                 // 현재 클라에게 정보가 있으면 가져오고
                 // 없으면 생성하고 가져오고 
-                var obj = NetObjectManager.Instance.GetObject<PlayerObject, PlayerInfo>(info);
+                var obj = NetObjectManager.Instance.GetObject(info);
                 obj.SetInfo(info);
             }
         }
@@ -130,8 +130,7 @@ namespace NetApp
         {
             PlayerInfo info;
             packet.ReadSerializable(out info);
-            var obj = NetObjectManager.Instance.GetObject<PlayerObject, PlayerInfo>(info);
-            obj.SetInfo(info);
+            var obj = NetObjectManager.Instance.GetObject(info);           
         }
         private void LeaveInViewProcess(Result result, Net.RecvPacket packet)
         {
@@ -151,7 +150,7 @@ namespace NetApp
                 packet.ReadSerializable(out info);
                 // 현재 클라에게 정보가 있으면 가져오고
                 // 없으면 생성하고 가져오고 
-                var obj = NetObjectManager.Instance.GetObject<PlayerObject, PlayerInfo>(info);
+                var obj = NetObjectManager.Instance.GetObject(info);
                 obj.SetInfo(info);
             }
         }

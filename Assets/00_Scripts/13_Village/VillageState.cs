@@ -25,26 +25,26 @@ namespace Net
 
         public INetStateBase.State SessionState => m_state;
 
-        public enum Protocol : Int64
+        public enum Protocol : UInt64
         {
             None = 0,
 
             //VillageInit = 1 << 0,                     // village 정보 전송
-            EnterVillage = 1 << 1,                      // village 입장
-            ExitVillage = 1 << 2,						// village 퇴장
+            EnterVillage = 1UL << 1,                      // village 입장
+            ExitVillage = 1UL << 2,						// village 퇴장
 
-            FirstInit = 1 << 20,            // village 입장 시 초기 정보들
-            FirstInit_Others = 1 << 21,     // village 입장 시 주변 player 정보를 가져옴
-            PlayerAction = 1 << 22,                                 // 이동하지 않는 모든 움직임
-            PlayerMove = 1 << 23,                                   // 이동하는 움직임
+            FirstInit = 1UL << 20,            // village 입장 시 초기 정보들
+            FirstInit_Others = 1UL << 21,     // village 입장 시 주변 player 정보를 가져옴
+            PlayerAction = 1UL << 22,                                 // 이동하지 않는 모든 움직임
+            PlayerMove = 1UL << 23,                                   // 이동하는 움직임
             PlayerMoveAndAction = (PlayerAction) | (PlayerMove),	// action 과 move 가 같이 일어날 수 있음
 
-            EnterInView = 1 << 24,          // 시야 범위 내로 들어온 새로운 오브젝트
-            LeaveInView = 1 << 25,			// 시야 범위 밖으로 나간 기존 오브젝트
-            EnterSection = 1 << 26,         // 새로운 섹션에 들어갈 경우 새로운 섹션에 존재하는 player들을 그려야 함
-            LeaveSection = 1 << 27          // 새로운 섹션에 들어갈 경우 기존에 그릴 필요 없는 놈들은 없에야됨
+            EnterInView = 1UL << 24,          // 시야 범위 내로 들어온 새로운 오브젝트
+            LeaveInView = 1UL << 25,			// 시야 범위 밖으로 나간 기존 오브젝트
+            EnterSection = 1UL << 26,         // 새로운 섹션에 들어갈 경우 새로운 섹션에 존재하는 player들을 그려야 함
+            LeaveSection = 1UL << 27          // 새로운 섹션에 들어갈 경우 기존에 그릴 필요 없는 놈들은 없에야됨
         }
-        public enum Result : Int32
+        public enum Result : UInt32
         {
             None,
         }
@@ -68,10 +68,10 @@ namespace Net
         {
             // unpack recvpacket data
             Protocol protocol;
-            recvpacket.Read<Int64, Protocol>(out protocol);
+            recvpacket.Read<UInt64, Protocol>(out protocol);
 
             Result result = Result.None;
-            // recvpacket.Read<Int32, Result>(out result);
+            // recvpacket.Read<UInt32, Result>(out result);
 
             switch(protocol)
             {

@@ -1,4 +1,4 @@
-#define __DEBUG
+//#define __DEBUG
 
 using System;
 using System.Collections;
@@ -46,7 +46,7 @@ public static class CipherManager
                 fixed (byte* ptr = pData)
                     sb.Append(string.Format("{0:X} ", (ptr + complete_size)[i]));
             }
-            Net.DebugConsoleGUIConstants.ShowMsg_Req("sb.ToString()");            
+            Net.DebugConsoleGUIConstants.ShowMsg_Req(sb.ToString());            
 #endif
             complete_size += BLOCK_SIZE;
         }
@@ -193,7 +193,6 @@ public static class CipherManager
         _DWORD L0, L1, R0, R1;       // Iuput/output values at each rounds
                                      //DWORD T0, T1;               // Temporary variables for round function F
         _DWORD[] K = pdwRoundkey;        // Pointer of round keys
-
 
         // Set up input values for first round
         L0 = ((_DWORD)pbData[3] << 24) | ((_DWORD)pbData[2] << 16) | ((_DWORD)pbData[1] << 8) | ((_DWORD)pbData[0]);
