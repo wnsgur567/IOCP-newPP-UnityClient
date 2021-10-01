@@ -99,6 +99,6 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
     public void OnNewaction(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
         inputVector = context.ReadValue<Vector2>();
-        Debug.Log($"inputVector : {inputVector}");
+        //Debug.Log($"inputVector : {inputVector}");
     }
 }

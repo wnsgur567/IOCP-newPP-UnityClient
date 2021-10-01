@@ -11,6 +11,9 @@ namespace NetApp
 
     public class CharacterSelectManager : Singleton<CharacterSelectManager>
     {
+        [SerializeField] GameObject BeforeGameStart;    // 게임 시작되기 전 사용할 오브젝트들의 최상단 object
+        [SerializeField] GameObject InGame;             // 게임 시작 후 사용할 오브젝트들의 최상단 object
+
         [SerializeField] Image CharacterSelectPanel;
 
         private void Update()
@@ -94,7 +97,12 @@ namespace NetApp
                         string msg;
                         packet.Read(out msg);
                         DebugConsoleGUIController.Instance.ShowMsg(msg);
-                        CharacterSelectPanel.gameObject.SetActive(false);
+
+                        //CharacterSelectPanel.gameObject.SetActive(false);
+                        // 로그인, 캐릭터 선택 등에 쓰이던 모든 오브젝트를 비활성화 함
+                        BeforeGameStart.SetActive(false);   
+                        // 게임 내부에서 사용할 오브젝트를 활성화
+                        InGame.SetActive(true);
                     }
                     break;
                 // id 재확인 필요

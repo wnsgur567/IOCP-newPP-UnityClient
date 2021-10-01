@@ -6,11 +6,15 @@ using UnityEngine;
 
 namespace NetApp
 {
-    using Protocol = Net.VillageState.Protocol;
-    using Result = Net.VillageState.Result;
+    using Protocol = Net.VillageState.Protocol;    
 
-    class VillageManager : Singleton<VillageManager>
+    public class VillageManager : Singleton<VillageManager>
     {
+        public enum Result
+        {
+            None = 0
+        }
+
         [SerializeField] SpriteRenderer village_bk_obj;
 
         VillageBaseInfo m_current_village_info;
@@ -33,6 +37,7 @@ namespace NetApp
                         EnterVillageProcess(char_data.result, char_data.recvPacket);
                         break;
                     case Protocol.ExitVillage:
+                        ExitVillageProcess(char_data.result, char_data.recvPacket);
                         break;
                     case Protocol.FirstInit:
                         FirstInitProcess(char_data.result, char_data.recvPacket);
@@ -91,7 +96,6 @@ namespace NetApp
 
             // control 오브젝트 등록
             ClientGameInfoManager.Instance.SetControllObject(obj as PlayerObject);
-            Debug.Log("aaaa");
         }
 
         // 첫 마을 입장시 자신을 제외한 플레이어 오브젝트 정보 recv 결과 처리

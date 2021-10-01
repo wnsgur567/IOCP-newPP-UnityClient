@@ -74,6 +74,8 @@ namespace Net
             m_session.__Finalize();
             m_state = State.Disconnected;
 
+            m_thread_endFlag = true;
+
             CipherManager.__Finalize();
         }
 

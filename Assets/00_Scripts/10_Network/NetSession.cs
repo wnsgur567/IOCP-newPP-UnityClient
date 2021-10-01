@@ -79,8 +79,10 @@ namespace Net
 
         public void __Finalize()
         {
-            m_netstream.Close();
-            m_client.Close();
+            if (m_netstream != null)
+                m_netstream.Close();
+            if (m_client != null)
+                m_client.Close();
         }
 
         public void ChangeState(INetStateBase next_stage)
@@ -93,15 +95,15 @@ namespace Net
 
 
         public void Recv()
-        {        
+        {
 
             // size recv
             byte[] size_bytes = new byte[sizeof(int)];
             m_netstream.Read(size_bytes, 0, sizeof(int));
-            int packet_size = BitConverter.ToInt32(size_bytes,0);
+            int packet_size = BitConverter.ToInt32(size_bytes, 0);
 
             // packet id recv
-            byte[] id_bytes = new byte[sizeof(int)];          
+            byte[] id_bytes = new byte[sizeof(int)];
             m_netstream.Read(id_bytes, 0, sizeof(int));
             int packet_id = BitConverter.ToInt32(id_bytes, 0);
 
@@ -118,7 +120,7 @@ namespace Net
             RecvPacket recvPacket = new RecvPacket();
             recvPacket.__Initialize();
             recvPacket.GetDataFromNetStream(m_netstream, data_size);
-                        
+
             recvPacket.UnPacking();
 
             OnRecvComplete(recvPacket);
