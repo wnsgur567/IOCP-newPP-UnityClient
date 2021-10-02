@@ -27,7 +27,7 @@ public class PlayerObject : NetObject
     {
         // info 로 오브젝트 초기화 시
         SetInfo(initialize_info as PlayerInfo);
-        Debug.Log("Player Obj Created");
+        // Debug.Log("Player Obj Created");
         this.gameObject.SetActive(true);
     }
 

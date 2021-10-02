@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/00_Scripts/Sign/SignPanelInput.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/00_Scripts/11_Sign/SignPanelInput.inputactions'
 
 using System;
 using System.Collections;

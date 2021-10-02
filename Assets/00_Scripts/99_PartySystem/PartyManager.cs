@@ -13,6 +13,20 @@ namespace NetApp
         public enum Result : UInt32
         {
             None = 0,
+
+            PartyCreated = 1U << 0,            // 파티 생성 완료
+
+            RequestChecking = 1U << 1,     // 파티 참가 신청 완료,
+            RequestAccept = 1U << 2,           // 파티 참가 신청을 파티장이 수락
+            RequestReject = 1U << 3,           // 파티 참가 신청을 파티장이 거부
+
+            ExitComplete = 1U << 4,            // 파티 퇴장 완료
+            ExitCompleteOther = 1U << 5,       // 파티원 중 한명이 파티를 퇴장
+
+            Kicked = 1U << 6,               // 강퇴 당함
+            KickedOther = 1U << 7,          // 파티원 중 한명이 강퇴당함				
+
+            NotExistParty = 1U << 8,			// 존재하지 않는 파티
         }
 
         // GUI 최상단 부모 object
@@ -64,6 +78,17 @@ namespace NetApp
             Net.NetworkManager.Instance.Send(sendPacket);
         }
 
+        public void SendRequestAllPartyList()
+        {
+            Net.SendPacket sendPacket = new Net.SendPacket();
+            sendPacket.__Initialize();
+
+            Protocol protocol = Protocol.AllPartyInfo;
+            sendPacket.Write((UInt64)protocol);
+
+            Net.NetworkManager.Instance.Send(sendPacket);
+        }
+
         // -------------------- Send process end ----------------------//
 
 
@@ -75,6 +100,10 @@ namespace NetApp
                 var party_data = Net.PartyConstants.Dequeue();
                 switch (party_data.protocol)
                 {
+                    case Net.VillageState.Protocol.CreateParty:
+                        CreatePartyProcess(party_data.result, party_data.recvPacket);
+                        break;
+
                     case Net.VillageState.Protocol.RequestParticipate:
                         RequestParticipateProcess(party_data.result, party_data.recvPacket);
                         break;
@@ -96,6 +125,17 @@ namespace NetApp
                     default:
                         break;
                 }
+            }
+        }
+
+        // 파티 생성을 서버에게 요청한 후 돌아오는 생성 결과
+        private void CreatePartyProcess(Result result, Net.RecvPacket packet)
+        {
+            // 파티가 성공적으로 생성 됨
+            if(result == Result.PartyCreated)
+            {
+                Debug.Log("파티 생성 완료");
+                // TODO : 실제 파티가 생성 되었을 경우 처리해야 될 프로세스 ...
             }
         }
 
@@ -141,7 +181,7 @@ namespace NetApp
                 packet.ReadSerializable(out info);
                 m_partyInfo_list.Add(info);
             }
-
+            Debug.Log("파티 정보 갱신");
             // 불러온 파티 정보로 갱신시키기
             PartySystemGUIController.Instance.SetPartyList(m_partyInfo_list);
         }

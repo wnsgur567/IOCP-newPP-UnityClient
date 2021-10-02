@@ -17,19 +17,46 @@ public class PlayerPartyInfo : Net.ISerializable
 
     public List<PlayerInfo> m_player_vec;
 
-    public int DeSerialize(MemoryStream stream)
+    public PlayerPartyInfo()
     {
-        throw new System.NotImplementedException();
+        m_player_vec = new List<PlayerInfo>();
+        m_player_vec.Resize<PlayerInfo>(4);
     }
 
+    public int DeSerialize(MemoryStream stream)
+    {
+        int size = 0;
+        size += Net.StreamReadWriter.ReadFromBinStream(stream, out m_party_id);
+        size += Net.StreamReadWriter.ReadFromBinStream(stream, out m_party_name);
+        size += Net.StreamReadWriter.ReadFromBinStream(stream, out m_cur_playercount);
+        size += Net.StreamReadWriter.ReadFromBinStream(stream, out m_max_playercount);
+        size += Net.StreamReadWriter.ReadFromBinStream(stream, out m_owner_index);
+
+        for (int i = 0; i < m_cur_playercount; i++)
+        {
+            int index = -1;
+            PlayerInfo info;
+            size += Net.StreamReadWriter.ReadFromBinStream(stream, out index);
+            size += Net.StreamReadWriter.ReadFromBinStreamSerializable(stream, out info);
+            m_player_vec[index] = info;
+        }
+
+        return size;
+    }
+
+    // 사용 할 일 없음
     public int Serialize(MemoryStream stream)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
+        //int size = 0;
+        //return size;
     }
 }
 
 public class PartySystemGUIController : Singleton<PartySystemGUIController>
 {
+    [SerializeField] Image m_create_party_panel;
+
     [SerializeField] TMPro.TMP_InputField m_inputfeild;       // 파티 검색 inputfield
     [SerializeField] Button m_search_button;        // 파티 검색 버튼
     [SerializeField] Button m_flush_button;         // inputfield 비우기 벝튼
@@ -137,15 +164,15 @@ public class PartySystemGUIController : Singleton<PartySystemGUIController>
         UpdatePartyInfoGUI();
     }
 
-    // 새로운 파티를 생성 , 서버에 해당 정보를 전송
+    // 파티 생성 창을 띄우기
     private void CreateNewParty()
     {
-
+        m_create_party_panel.gameObject.SetActive(true);
     }
 
     // 서버로부터 정보를 받아 파티 리스트를 갱신함
     private void RefreshParty()
     {
-
+        NetApp.PartyManager.Instance.SendRequestAllPartyList();
     }
 }
