@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerObject : NetObject
 {
     [SerializeField] PlayerInfo m_info;
+    [SerializeField] PlayerPartyInfo m_party_info;
 
     public Vector3 Position
     {
@@ -16,7 +17,6 @@ public class PlayerObject : NetObject
             this.transform.position = value;
         }
     }
-
     public NetVector3 NetPosition
     {
         get { return m_info.GetNetPosition(); }
@@ -36,6 +36,7 @@ public class PlayerObject : NetObject
         //throw new System.NotImplementedException();
     }
 
+    #region PlayerInfo
     public override NetObjectInfo GetInfo()
     {
         return m_info;
@@ -47,9 +48,21 @@ public class PlayerObject : NetObject
         OnInfoChanged();
     }
 
-
     private void OnInfoChanged()
     {
         this.transform.position = m_info.GetPosition();
     }
+    #endregion
+
+    #region PartyInfo
+    public void SetPartyInfo(PlayerPartyInfo info)
+    {
+        m_party_info = info;
+    }
+    public PlayerPartyInfo GetPartyInfo()
+    {
+        return m_party_info;
+    }
+    #endregion
+
 }

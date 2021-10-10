@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+// 파티 시스템 (파티 리스트를 출력하고 검색하는 창) GUI 내부에서
+// 현재 파티원의 목록을 표시하는 리스트 중 하나의 항목에 대한 GUI class
 public class PartyInfoGUIItem : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] TMPro.TextMeshProUGUI m_partyname_tmpro;
@@ -38,8 +40,7 @@ public class PartyInfoGUIItem : MonoBehaviour, IPointerClickHandler
             return;
 
         // 클릭 되었을 경우 Party 정보를 표시하는 파티창을 띄움
-        // 매니저에게 요청
-
-
+        PartyGUIController.Instance.SetPartyInfo(m_info);
+        PartyGUIController.Instance.Activate();
     }
 }

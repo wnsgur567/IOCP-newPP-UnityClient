@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+// 파티 하나에 되한 정보
 public class PlayerPartyInfo : Net.ISerializable
 {
     public UInt32 m_party_id;
@@ -53,6 +54,7 @@ public class PlayerPartyInfo : Net.ISerializable
     }
 }
 
+// 검색 , 파티리스트 , 파티 생성 등을 총괄하는 Main GUI 컨트롤러
 public class PartySystemGUIController : Singleton<PartySystemGUIController>
 {
     [SerializeField] Image m_create_party_panel;
@@ -98,7 +100,7 @@ public class PartySystemGUIController : Singleton<PartySystemGUIController>
         // right...
     }
 
-    private void ClearShowList()
+    public void ClearShowList()
     {
         // gui party 정보들을 비우기
         foreach (var item in m_show_list)

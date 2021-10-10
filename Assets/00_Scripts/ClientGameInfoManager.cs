@@ -17,8 +17,24 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
     bool IsObjActivated = false;
     // 직접 조종 가능한 플레이어 오브젝트
     PlayerObject m_controll_object = null;
-    // 위 오브젝트 내부의 info
     PlayerInfo m_info;
+    PlayerPartyInfo m_party_info;
+
+    public PlayerObject ControllPlayer
+    {
+        get { return m_controll_object; }
+    }
+    public PlayerInfo ControllPlayerInfo
+    {
+        get
+        {
+            return m_info;
+        }
+    }
+    public PlayerPartyInfo PartyInfo
+    {
+        get { return m_party_info; }
+    }
 
 
     // input 값 관련 var [-1, 1]
@@ -55,7 +71,7 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
             interval_acc += Time.deltaTime;
             if (interval_acc > SendInterval)
             {
-                interval_acc =- SendInterval;
+                interval_acc = -SendInterval;
                 SendPlayerPos();
             }
         }
@@ -76,8 +92,8 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
     }
 
     public void MovePlayer(Vector3 delta)
-    {      
-        m_controll_object.Position = m_controll_object.Position + delta;       
+    {
+        m_controll_object.Position = m_controll_object.Position + delta;
         player_camera.transform.position = player_camera.transform.position + delta;
     }
 
@@ -93,6 +109,12 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
         // set camera
         var pos = ((PlayerInfo)obj.GetInfo()).GetPosition();
         player_camera.transform.position = new Vector3(pos.x, pos.y, player_camera.transform.position.z);
+    }
+
+    public void SetParty(PlayerPartyInfo info)
+    {
+        m_controll_object.SetPartyInfo(info);
+        m_party_info = info;
     }
 
 

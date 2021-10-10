@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PartyGUIController : Singleton<PartyGUIController>
+public class PartyGUIController : Singleton<PartyGUIController>, IGUIAcitvationHandler
 {
+    [SerializeField] Image m_root_panel;
+
     [SerializeField] TMPro.TextMeshProUGUI m_party_name;
     [SerializeField] List<PlayerInfoInPartyGUI> m_playerInfo_list;
     [SerializeField] Button m_request_button;
     [SerializeField] Button m_exit_button;
+
+    // 가장 최근에 표시했던 파티 정보
+    PlayerPartyInfo m_current_party_info;
 
     private void Awake()
     {
@@ -16,24 +21,50 @@ public class PartyGUIController : Singleton<PartyGUIController>
         {
             item.Flush();
         }
+
+        m_request_button.onClick.AddListener(__OnRequestButtonClicked);
+        m_exit_button.onClick.AddListener(__OnExitButtonClicked);
+
+        DeActivate();
     }
 
-    public void SetPartyInfo(string name)
+
+    public void SetPartyInfo(PlayerPartyInfo info)
     {
-        m_party_name.text = name;
+        m_current_party_info = info;
+        m_party_name.text = info.m_party_name;
+
+        for (int i = 0; i < 4; i++)
+        {
+            var cur_player = info.m_player_vec[i];
+            if (cur_player != null)
+            {
+                m_playerInfo_list[i].SetInfo(cur_player);
+            }
+        }
     }
-    // index 0 - 3 (총 4명)
-    public void SetPlayerInfo(int index, PlayerInfo info, bool isOwner = false)
-    {
-        var character_info = info.GetCharacterInfo();
-        m_playerInfo_list[index].SetInfo(
-            null,   // sprite
-            1,      // level
-            character_info.character_name,  // name
-            character_info.character_type.ToString());  // character type
-    }
+
     public void FlushPlayer(int index)
     {
         m_playerInfo_list[index].Flush();
+    }
+
+    public void Activate()
+    {
+        m_root_panel.gameObject.SetActive(true);
+    }
+
+    public void DeActivate()
+    {
+        m_root_panel.gameObject.SetActive(false);
+    }
+
+    public void __OnRequestButtonClicked()
+    {
+
+    }
+    public void __OnExitButtonClicked()
+    {
+        NetApp.PartyManager.Instance.SendExitParty(m_current_party_info.m_party_id);
     }
 }

@@ -8,6 +8,8 @@ namespace NetApp
 {
     using Protocol = Net.VillageState.Protocol;
 
+    // 네트워크 스레드에서 받은 패킷을 분석하여 
+    // 해당 상황에 맞는 프로세스를 진행하도록 뿌리는 역활
     public class PartyManager : Singleton<PartyManager>
     {
         public enum Result : UInt32
@@ -27,36 +29,7 @@ namespace NetApp
             KickedOther = 1U << 7,          // 파티원 중 한명이 강퇴당함				
 
             NotExistParty = 1U << 8,			// 존재하지 않는 파티
-        }
-
-        // GUI 최상단 부모 object
-        [SerializeField] Image m_partySystem_panel;
-        [SerializeField] Image m_party_panel;
-        [SerializeField] Image m_volunteer_panel;
-
-        public void ShowPartySystem()
-        {
-            m_partySystem_panel.gameObject.SetActive(true);
-        }
-        public void UnShowPartySystem()
-        {
-            m_partySystem_panel.gameObject.SetActive(false);
-        }
-        public void ShowPartyInfo()
-        {
-            m_party_panel.gameObject.SetActive(true);
-        }
-        public void UnShowPartyInfo()
-        {
-            m_party_panel.gameObject.SetActive(false);
-        }
-        public void ShowVolunteer()
-        {
-            m_volunteer_panel.gameObject.SetActive(true);
-        }
-        public void UnShowVolunteer()
-        {
-            m_volunteer_panel.gameObject.SetActive(false);
+            SuccessAllPartyInfo = 1U << 9,		// 모든 파티 정보 검색 성공
         }
 
         private void Update()
@@ -85,6 +58,18 @@ namespace NetApp
 
             Protocol protocol = Protocol.AllPartyInfo;
             sendPacket.Write((UInt64)protocol);
+
+            Net.NetworkManager.Instance.Send(sendPacket);
+        }
+
+        public void SendExitParty(uint party_id)
+        {
+            Net.SendPacket sendPacket = new Net.SendPacket();
+            sendPacket.__Initialize();
+
+            Protocol protocol = Protocol.Exit;
+            sendPacket.Write((UInt64)protocol);
+            sendPacket.Write(party_id);
 
             Net.NetworkManager.Instance.Send(sendPacket);
         }
@@ -132,10 +117,23 @@ namespace NetApp
         private void CreatePartyProcess(Result result, Net.RecvPacket packet)
         {
             // 파티가 성공적으로 생성 됨
-            if(result == Result.PartyCreated)
+            if (result == Result.PartyCreated)
             {
                 Debug.Log("파티 생성 완료");
-                // TODO : 실제 파티가 생성 되었을 경우 처리해야 될 프로세스 ...
+
+                PlayerPartyInfo party_info;
+                packet.ReadSerializable(out party_info);
+                // 플레이어의 파티 정보 갱신
+                ClientGameInfoManager.Instance.SetParty(party_info);
+                // 현재 플레이 중인 플레이어의 정보
+                PlayerInfo cur_playerinfo = ClientGameInfoManager.Instance.ControllPlayerInfo;
+                // UI 상단 파티원 정보 창 갱신
+                PartyPlayersGUIController.Instance.SetInfo(0, cur_playerinfo);
+                PartyPlayersGUIController.Instance.Activate();
+            }
+            else
+            {
+                Debug.Log("파티 생성 실패");
             }
         }
 
@@ -153,7 +151,21 @@ namespace NetApp
 
         private void ExitProcess(Result result, Net.RecvPacket packet)
         {
+            if (result == Result.ExitComplete)
+            {
+                Debug.Log("파티 탈퇴 성공");
 
+                // 현재 플레이어의 파티 정보를 갱신
+                ClientGameInfoManager.Instance.SetParty(null);
+                // UI 상단 파티원 정보 창 끄기
+                PartyPlayersGUIController.Instance.DeActivate();
+                // 파티 정보 창 열려있다면 끄기
+                PartyGUIController.Instance.DeActivate();
+            }
+            else
+            {
+                Debug.Log("파티 탈퇴 실패");
+            }
         }
         private void KickProcess(Result result, Net.RecvPacket packet)
         {
@@ -167,23 +179,30 @@ namespace NetApp
         // 현재 서버에 존재하는 모든 파티 정보를 가져옴
         private void AllPartyInfoProcess(Result result, Net.RecvPacket packet)
         {
-            // party vector size + party vector data
-
-            // size
-            int size;
-            packet.Read(out size);
-
-            // data
-            List<PlayerPartyInfo> m_partyInfo_list = new List<PlayerPartyInfo>(size);
-            for (int i = 0; i < size; i++)
-            {
-                PlayerPartyInfo info;
-                packet.ReadSerializable(out info);
-                m_partyInfo_list.Add(info);
+            if (result == Result.NotExistParty)
+            {   // 생성된 파티가 아예없는 경우
+                PartySystemGUIController.Instance.ClearShowList();
             }
-            Debug.Log("파티 정보 갱신");
-            // 불러온 파티 정보로 갱신시키기
-            PartySystemGUIController.Instance.SetPartyList(m_partyInfo_list);
+            else if (result == Result.SuccessAllPartyInfo)
+            {
+                // party vector size + party vector data
+                // size
+                int size;
+                packet.Read(out size);
+
+                // data
+                List<PlayerPartyInfo> m_partyInfo_list = new List<PlayerPartyInfo>(size);
+                for (int i = 0; i < size; i++)
+                {
+                    PlayerPartyInfo info;
+                    packet.ReadSerializable(out info);
+                    m_partyInfo_list.Add(info);
+                }
+                Debug.Log("파티 정보 갱신");
+                // 불러온 파티 정보로 갱신시키기
+                PartySystemGUIController.Instance.SetPartyList(m_partyInfo_list);
+            }
         }
+
     }
 }
