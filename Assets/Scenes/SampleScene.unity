@@ -211,8 +211,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -787,8 +787,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2441,8 +2441,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -3148,6 +3148,7 @@ MonoBehaviour:
   m_character_image: {fileID: 249134268}
   m_character_name_text: {fileID: 568810264}
   m_character_type_text: {fileID: 12459651}
+  m_button: {fileID: 249134267}
 --- !u!114 &249134267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4107,7 +4108,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 366279832}
   m_OnClick:
     m_PersistentCalls:
@@ -4312,6 +4313,7 @@ MonoBehaviour:
   m_character_image: {fileID: 380818383}
   m_character_name_text: {fileID: 546990153}
   m_character_type_text: {fileID: 512134266}
+  m_button: {fileID: 380818382}
 --- !u!1 &381797026
 GameObject:
   m_ObjectHideFlags: 0
@@ -4687,6 +4689,7 @@ MonoBehaviour:
   m_character_image: {fileID: 394176223}
   m_character_name_text: {fileID: 1133510946}
   m_character_type_text: {fileID: 834781621}
+  m_button: {fileID: 394176222}
 --- !u!114 &394176222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6477,8 +6480,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -6936,7 +6939,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 527549151}
   m_OnClick:
     m_PersistentCalls:
@@ -7246,8 +7249,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -7692,8 +7695,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -9713,8 +9716,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -10444,8 +10447,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -10546,6 +10549,7 @@ MonoBehaviour:
   m_character_image: {fileID: 836172789}
   m_character_name_text: {fileID: 207458998}
   m_character_type_text: {fileID: 786412957}
+  m_button: {fileID: 836172788}
 --- !u!114 &836172788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11271,8 +11275,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -12076,8 +12080,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -12425,6 +12429,7 @@ MonoBehaviour:
   m_character_image: {fileID: 965264399}
   m_character_name_text: {fileID: 1871857216}
   m_character_type_text: {fileID: 1261935958}
+  m_button: {fileID: 965264398}
 --- !u!114 &965264398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12956,6 +12961,7 @@ MonoBehaviour:
   m_character_image: {fileID: 1007321591}
   m_character_name_text: {fileID: 1537072383}
   m_character_type_text: {fileID: 1509669674}
+  m_button: {fileID: 1007321590}
 --- !u!114 &1007321590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14126,6 +14132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a4f2efa75ce864cb79162aab2d35bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flag: 0
   m_root_panel: {fileID: 1831592460}
   m_inputfield: {fileID: 1837970367}
   m_maxPlayerCount_dropdown: {fileID: 1843039798}
@@ -14405,8 +14412,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -15358,6 +15365,7 @@ MonoBehaviour:
   m_character_image: {fileID: 1178555407}
   m_character_name_text: {fileID: 1263936219}
   m_character_type_text: {fileID: 1796329353}
+  m_button: {fileID: 1178555406}
 --- !u!114 &1178555406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16355,8 +16363,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -16489,8 +16497,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -16702,6 +16710,7 @@ MonoBehaviour:
   m_character_image: {fileID: 1272051437}
   m_character_name_text: {fileID: 77908761}
   m_character_type_text: {fileID: 910589696}
+  m_button: {fileID: 1272051436}
 --- !u!114 &1272051436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16852,6 +16861,7 @@ MonoBehaviour:
   m_character_image: {fileID: 1275763612}
   m_character_name_text: {fileID: 1804186175}
   m_character_type_text: {fileID: 955240444}
+  m_button: {fileID: 1275763611}
 --- !u!114 &1275763611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17816,6 +17826,7 @@ MonoBehaviour:
   m_character_image: {fileID: 1334454871}
   m_character_name_text: {fileID: 1488861762}
   m_character_type_text: {fileID: 2078903886}
+  m_button: {fileID: 1334454870}
 --- !u!114 &1334454870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19367,8 +19378,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -19501,8 +19512,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -19835,8 +19846,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -22236,8 +22247,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -22504,8 +22515,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -23222,8 +23233,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -25332,8 +25343,8 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

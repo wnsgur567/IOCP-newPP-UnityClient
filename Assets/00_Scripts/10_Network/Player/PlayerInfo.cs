@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerInfo : NetObjectInfo
 {
     CharacterSelectInfo m_character_info;
-    NetVector3 m_position;
+    NetVector3 m_position;   
 
     public PlayerInfo() : base(NetObjectInfo.ENetGameObjectType.PlayerCharacter)
     {
@@ -34,6 +34,8 @@ public class PlayerInfo : NetObjectInfo
     {
         return m_character_info;
     }
+
+
 
     override public int Serialize(MemoryStream stream)
     {

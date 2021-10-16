@@ -22,7 +22,9 @@ public class PartyPlayerGUIItem : MonoBehaviour
         m_character_image.sprite = null;
         m_name_tmpro.text = "";
         m_hp_slider.value = 1.0f;
+        m_hp_slider.interactable = false;
         m_mp_slider.value = 1.0f;
+        m_mp_slider.interactable = false;
     }
     public void SetInfo(PlayerInfo info)
     {

@@ -88,10 +88,8 @@ public class DebugConsoleGUIController : Singleton<DebugConsoleGUIController>
         show_slot.SetText(msg_text);
         show_slot.transform.SetParent(content_parent.transform);
         show_slot.gameObject.SetActive(true);
-        show_slot.transform.localScale = new Vector3(1, 1, 1);       
+        show_slot.transform.localScale = new Vector3(1, 1, 1);    
         
-
-
         Debug.Log(msg_text);
         StartCoroutine(Co_RetrieveProcess(show_slot, delay));
     }

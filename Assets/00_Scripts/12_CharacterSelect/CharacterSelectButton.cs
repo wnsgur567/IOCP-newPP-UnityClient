@@ -9,12 +9,7 @@ public class CharacterSelectButton : MonoBehaviour
     [SerializeField] Image m_character_image;
     [SerializeField] TMPro.TextMeshProUGUI m_character_name_text;
     [SerializeField] TMPro.TextMeshProUGUI m_character_type_text;
-    Button m_button;
-
-    private void Awake()
-    {
-        m_button = this.GetComponent<Button>();
-    }
+    [SerializeField] Button m_button;    
 
     public void SetInfo(CharacterSelectInfo info)
     {

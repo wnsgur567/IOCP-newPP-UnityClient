@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerInput.IMoveActionsActions
+public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerInput.IMoveActionsActions, IPartyInOutCallback
 {
     [SerializeField] Camera player_camera;  // player 이동 따라다니는 카메라
     [SerializeField] float player_movespeed;
@@ -17,8 +17,6 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
     bool IsObjActivated = false;
     // 직접 조종 가능한 플레이어 오브젝트
     PlayerObject m_controll_object = null;
-    PlayerInfo m_info;
-    PlayerPartyInfo m_party_info;
 
     public PlayerObject ControllPlayer
     {
@@ -28,12 +26,12 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
     {
         get
         {
-            return m_info;
+            return (PlayerInfo)m_controll_object.GetInfo();
         }
     }
     public PlayerPartyInfo PartyInfo
     {
-        get { return m_party_info; }
+        get { return m_controll_object.GetPartyInfo(); }
     }
 
 
@@ -102,7 +100,6 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
         // set object
         IsObjActivated = true;
         m_controll_object = obj;
-        m_info = (PlayerInfo)m_controll_object.GetInfo();
 
         m_controll_object.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
 
@@ -111,16 +108,30 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerIn
         player_camera.transform.position = new Vector3(pos.x, pos.y, player_camera.transform.position.z);
     }
 
-    public void SetParty(PlayerPartyInfo info)
-    {
-        m_controll_object.SetPartyInfo(info);
-        m_party_info = info;
-    }
-
 
     public void OnNewaction(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
         inputVector = context.ReadValue<Vector2>();
         //Debug.Log($"inputVector : {inputVector}");
+    }
+
+    // 파티에 참가 할 경우 셋팅할 것들
+    public void OnEnterParty(PlayerPartyInfo info)
+    {
+        m_controll_object.SetPartyInfo(info);
+        if (info == null)
+        {   // 파티에 가입되지 않은 경우
+            // ...
+        }
+        else
+        {   // 파티에 가입한 경우
+            // ...
+        }
+    }
+
+    // 파티에서 나갈 경우 할 경우 셋팅할 것들
+    public void OnExitParty()
+    {
+        m_controll_object.SetPartyInfo(null);
     }
 }

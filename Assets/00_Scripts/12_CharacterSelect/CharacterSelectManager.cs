@@ -93,16 +93,16 @@ namespace NetApp
                 // 캐릭터 선택 완료
                 // village state 로 이동 
                 case Result.Success_CharacterSelect:
-                    {
+                    {    
                         string msg;
                         packet.Read(out msg);
                         DebugConsoleGUIController.Instance.ShowMsg(msg);
 
                         //CharacterSelectPanel.gameObject.SetActive(false);
                         // 로그인, 캐릭터 선택 등에 쓰이던 모든 오브젝트를 비활성화 함
-                        BeforeGameStart.SetActive(false);   
+                        BeforeGameStart.SetActive(false);
                         // 게임 내부에서 사용할 오브젝트를 활성화
-                        InGame.SetActive(true);
+                        InGame.SetActive(true);                        
                     }
                     break;
                 // id 재확인 필요

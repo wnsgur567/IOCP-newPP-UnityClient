@@ -12,8 +12,9 @@ public class CharacterSelectGUIController : Singleton<CharacterSelectGUIControll
     private void Awake()
     {
         // child 를 관리 리스트로
-        var children = m_buttons_parent.transform.GetComponentsInChildren<CharacterSelectButton>();
+        var children = m_buttons_parent.transform.GetComponentsInChildren<CharacterSelectButton>(true);
         m_buttons_list.AddRange(children);
+        m_root_panel.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -27,7 +28,12 @@ public class CharacterSelectGUIController : Singleton<CharacterSelectGUIControll
 
     private void __Initialize()
     {
-
+        // 모든 버튼을 비활성화
+        // 추후 정보가 셋팅 될 경우 셋팅되는 버튼만 활성화 시킬것
+        foreach (var item in m_buttons_list)
+        {
+            item.ButtonInteractionOFF();
+        }
     }
     private void __Finalize()
     {
@@ -45,9 +51,13 @@ public class CharacterSelectGUIController : Singleton<CharacterSelectGUIControll
 
     public void SetCharacterInfomation(List<CharacterSelectInfo> infoList)
     {
-        for (int i = 0; i < infoList.Count; i++)
+        // 정보 셋팅
+        // 셋팅 된 버튼 활성화
+        int len = infoList.Count > m_buttons_list.Count ? m_buttons_list.Count : infoList.Count;
+        for (int i = 0; i < len; i++)
         {
             m_buttons_list[i].SetInfo(infoList[i]);
+            m_buttons_list[i].ButtonInteractionON();
         }
     }
 
@@ -58,10 +68,14 @@ public class CharacterSelectGUIController : Singleton<CharacterSelectGUIControll
         {
             item.ButtonInteractionOFF();
         }
+        // server에 요청
         NetApp.CharacterSelectManager.Instance.CharacterSelectedProcess(info);
+        // player info 를 현재 캐릭터로 갱신
+
     }
     public void __OnSignOutSelected()
     {
+        // server에 요청
         NetApp.CharacterSelectManager.Instance.SignOutSelectedProcess();
     }
 

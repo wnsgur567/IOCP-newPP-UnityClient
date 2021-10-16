@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PartyCreateGUI : MonoBehaviour
+public class PartyCreateGUIController :
+    Singleton<PartyCreateGUIController>, IGUIAcitvationHandler, IPartyInOutCallback
 {
     [SerializeField] Image m_root_panel;
 
@@ -24,6 +25,7 @@ public class PartyCreateGUI : MonoBehaviour
 
         Flush();
         LinkButtonCallback();
+        DeActivate();
     }
 
     public void Flush()
@@ -37,15 +39,6 @@ public class PartyCreateGUI : MonoBehaviour
         m_cancle_button.onClick.AddListener(OnCancelButtonClicked);
     }
 
-    public void Show()
-    {
-        m_root_panel.gameObject.SetActive(true);
-    }
-    public void UnShow()
-    {
-        m_root_panel.gameObject.SetActive(false);
-    }
-
 
     private void OnOkButtonClicked()
     {
@@ -55,10 +48,30 @@ public class PartyCreateGUI : MonoBehaviour
         var player_count =
             m_dropdownIndex_to_playercount_dic[m_maxPlayerCount_dropdown.value];
 
-        NetApp.PartyManager.Instance.SendCreateRoomData(party_name, player_count);        
+        NetApp.PartyManager.Instance.SendCreateRoomData(party_name, player_count);
     }
     private void OnCancelButtonClicked()
     {
 
+    }
+
+    public void Activate()
+    {
+        m_root_panel.gameObject.SetActive(true);
+    }
+
+    public void DeActivate()
+    {
+        m_root_panel.gameObject.SetActive(false);
+    }
+
+    public void OnEnterParty(PlayerPartyInfo info)
+    {
+        m_ok_button.interactable = false;
+    }
+
+    public void OnExitParty()
+    {
+        m_ok_button.interactable = true;
     }
 }

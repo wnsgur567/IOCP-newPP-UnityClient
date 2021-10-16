@@ -21,6 +21,12 @@ public class PlayerObject : NetObject
     {
         get { return m_info.GetNetPosition(); }
     }
+    public bool IsInParty()
+    {
+        if (m_party_info == null)
+            return false;
+        return true;
+    }
 
 
     public override void OnCreated(NetObjectInfo initialize_info)

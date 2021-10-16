@@ -12,6 +12,17 @@ namespace NetApp
     // 해당 상황에 맞는 프로세스를 진행하도록 뿌리는 역활
     public class PartyManager : Singleton<PartyManager>
     {
+        delegate void OnEnterPartyHandler(PlayerPartyInfo party_info);
+        delegate void OnExitPartyHandler();
+        event OnEnterPartyHandler OnEnterPartyEvent;
+        event OnExitPartyHandler OnExitPartyEvent;
+
+        public void LinkPartyEventCallbacks(IPartyInOutCallback listner)
+        {
+            OnEnterPartyEvent += listner.OnEnterParty;
+            OnExitPartyEvent += listner.OnExitParty;
+        }
+
         public enum Result : UInt32
         {
             None = 0,
@@ -38,6 +49,7 @@ namespace NetApp
         }
 
         // -------------------- Send process ----------------------//
+        #region Send Process
         public void SendCreateRoomData(string name, int max_count)
         {
             Net.SendPacket sendPacket = new Net.SendPacket();
@@ -73,11 +85,12 @@ namespace NetApp
 
             Net.NetworkManager.Instance.Send(sendPacket);
         }
-
+        #endregion
         // -------------------- Send process end ----------------------//
 
 
         // -------------------- On Recv process ----------------------//
+        #region RecvProcess
         private void CallbackCheck()
         {
             while (false == Net.PartyConstants.IsEmpty())
@@ -112,7 +125,7 @@ namespace NetApp
                 }
             }
         }
-
+        #endregion
         // 파티 생성을 서버에게 요청한 후 돌아오는 생성 결과
         private void CreatePartyProcess(Result result, Net.RecvPacket packet)
         {
@@ -121,15 +134,12 @@ namespace NetApp
             {
                 Debug.Log("파티 생성 완료");
 
+                // 서버로 부터 받아온 , 생성된 파티의 정보
                 PlayerPartyInfo party_info;
                 packet.ReadSerializable(out party_info);
-                // 플레이어의 파티 정보 갱신
-                ClientGameInfoManager.Instance.SetParty(party_info);
-                // 현재 플레이 중인 플레이어의 정보
-                PlayerInfo cur_playerinfo = ClientGameInfoManager.Instance.ControllPlayerInfo;
-                // UI 상단 파티원 정보 창 갱신
-                PartyPlayersGUIController.Instance.SetInfo(0, cur_playerinfo);
-                PartyPlayersGUIController.Instance.Activate();
+
+                // 파티 입장 시 이벤트 콜백
+                OnEnterPartyEvent?.Invoke(party_info);
             }
             else
             {
@@ -154,13 +164,8 @@ namespace NetApp
             if (result == Result.ExitComplete)
             {
                 Debug.Log("파티 탈퇴 성공");
-
-                // 현재 플레이어의 파티 정보를 갱신
-                ClientGameInfoManager.Instance.SetParty(null);
-                // UI 상단 파티원 정보 창 끄기
-                PartyPlayersGUIController.Instance.DeActivate();
-                // 파티 정보 창 열려있다면 끄기
-                PartyGUIController.Instance.DeActivate();
+                // 파티 탈퇴 시 이벤트 콜백
+                OnExitPartyEvent?.Invoke(); 
             }
             else
             {
