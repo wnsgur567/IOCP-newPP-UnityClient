@@ -48,16 +48,17 @@ namespace Net
             /// <summary>
             /// party system
             /// </summary>
-            CreateParty = 1UL << 30,           // 파티 생성		, Result 있음
+            CreateParty = 1UL << 30,           // 파티 생성		 , Result 있음
             RequestParticipate = 1UL << 31,    // 파티 참가 요청 , Result 있음
+            RequestReply = 1UL << 32,
 
-            NewParticipant = 1UL << 32,        // 새로운 파티 참가자, 기존 파티원에게 보낼때만
+            NewParticipant = 1UL << 33,        // 새로운 파티 참가자, 기존 파티원에게 보낼때만
 
-            Exit = 1UL << 33,                  // 자신이 파티에서 나감
-            Kick = 1UL << 34,                  // 파티장이 파티에서 강퇴
-            TransferOwner = 1UL << 35,         // 파티장 위임
+            Exit = 1UL << 34,                  // 자신이 파티에서 나감
+            Kick = 1UL << 35,                  // 파티장이 파티에서 강퇴
+            TransferOwner = 1UL << 36,         // 파티장 위임
 
-            AllPartyInfo = 1UL << 36,			// 모든 파티 정보
+            AllPartyInfo = 1UL << 37,			// 모든 파티 정보
         }
         
 

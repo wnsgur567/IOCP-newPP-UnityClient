@@ -85,6 +85,9 @@ public class PartySystemGUIController : Singleton<PartySystemGUIController>,
         m_searched_infos = new List<PlayerPartyInfo>();
         ClearShowList();
         LinkButtonCallback();
+
+        // 처음은 파티가입이 안 되어있는 상태로 시작
+        OnExitParty();
         DeActivate();
     }
 

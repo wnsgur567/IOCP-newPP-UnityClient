@@ -25,6 +25,7 @@ public class PartyCreateGUIController :
 
         Flush();
         LinkButtonCallback();
+        OnExitParty();
         DeActivate();
     }
 

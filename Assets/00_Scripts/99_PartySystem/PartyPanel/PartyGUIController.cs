@@ -31,6 +31,8 @@ public class PartyGUIController : Singleton<PartyGUIController>,
         m_request_button.onClick.AddListener(__OnRequestButtonClicked);
         m_exit_button.onClick.AddListener(__OnExitButtonClicked);
 
+        // 첫 시작은 파티 가입이 안되어있는 상태로
+        OnExitParty();
         DeActivate();
     }
 
@@ -79,7 +81,21 @@ public class PartyGUIController : Singleton<PartyGUIController>,
     // Request button 클릭시 callback 함수
     public void __OnRequestButtonClicked()
     {
+        if (m_current_party_info != null)
+        {
+            // 현재 파티 정보에 대한 인원수 정보를 비교
+            // 인원이 maximum 이 아니라면 신청 가능한 상태
+            if (m_current_party_info.m_cur_playercount < m_current_party_info.m_max_playercount)
+            {                
+                NetApp.PartyManager.Instance.SendRequestEnterParty(m_current_party_info.m_party_id);
+            }
+            // 인원이 maximum이면 server에 요청하지 않음...
+            else
+            {
+                // ...
+            }
 
+        }
     }
 
     // Exit button 클릭시 callback 함수

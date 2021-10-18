@@ -55,6 +55,7 @@ namespace NetApp
 
         // -------------------- Send process ----------------------//
         #region Send Process
+        // 새로운 파티를 생성..
         public void SendCreateRoomData(string name, int max_count)
         {
             Net.SendPacket sendPacket = new Net.SendPacket();
@@ -67,7 +68,7 @@ namespace NetApp
 
             Net.NetworkManager.Instance.Send(sendPacket);
         }
-
+        // 현재 생성되어 있는 모든 파티 정보를 요청하는...
         public void SendRequestAllPartyList()
         {
             Net.SendPacket sendPacket = new Net.SendPacket();
@@ -78,7 +79,7 @@ namespace NetApp
 
             Net.NetworkManager.Instance.Send(sendPacket);
         }
-
+        // 현재 파티에서 탈퇴하는...
         public void SendExitParty(uint party_id)
         {
             Net.SendPacket sendPacket = new Net.SendPacket();
@@ -87,6 +88,49 @@ namespace NetApp
             Protocol protocol = Protocol.Exit;
             sendPacket.Write((UInt64)protocol);
             sendPacket.Write(party_id);
+
+            Net.NetworkManager.Instance.Send(sendPacket);
+        }
+
+        // 파티장에게 파티 신청을 요청...
+        public void SendRequestEnterParty(uint party_id)
+        {
+            Net.SendPacket sendPacket = new Net.SendPacket();
+            sendPacket.__Initialize();
+
+            Protocol protocol = Protocol.RequestParticipate;
+            sendPacket.Write((UInt64)protocol);
+            sendPacket.Write(party_id);
+
+            Net.NetworkManager.Instance.Send(sendPacket);
+        }
+
+        // 파티 신청을 수락
+        public void SendAcceptRequest(PlayerInfo player_info)
+        {
+            Net.SendPacket sendPacket = new Net.SendPacket();
+            sendPacket.__Initialize();
+
+            Protocol protocol = Protocol.RequestReply;
+            Result result = Result.RequestAccept;
+            sendPacket.Write((UInt64)protocol);
+            sendPacket.Write((UInt32)result);
+            sendPacket.Write(player_info);
+
+            Net.NetworkManager.Instance.Send(sendPacket);
+        }
+
+        // 파티 신청을 거부
+        public void SendRejectRequest(PlayerInfo player_info)
+        {
+            Net.SendPacket sendPacket = new Net.SendPacket();
+            sendPacket.__Initialize();
+
+            Protocol protocol = Protocol.RequestReply;
+            Result result = Result.RequestReject;
+            sendPacket.Write((UInt64)protocol);
+            sendPacket.Write((UInt32)result);
+            sendPacket.Write(player_info);
 
             Net.NetworkManager.Instance.Send(sendPacket);
         }
@@ -152,10 +196,27 @@ namespace NetApp
             }
         }
 
-        // 파티 신청의 결과 확인
+        // 파티 신청 관련 프로세스
         private void RequestParticipateProcess(Result result, Net.RecvPacket packet)
         {
+            switch (result)
+            {
+                // 파티 신청인의 정보를 받음
+                case Result.RequestChecking:
+                    PlayerInfo playerinfo;
+                    packet.ReadSerializable(out playerinfo);
 
+                    // 신청인 정보를 추가
+                    VolunteerGUIController.Instance.NewVolunteer(playerinfo);
+
+                    break;
+                // 파티 신청이 파티장에 의해 수락됨
+                case Result.RequestAccept:
+                    break;
+                // 파티 신청이 파티장에 의해 거부됨
+                case Result.RequestReject:
+                    break;
+            }
         }
 
         // 새로운 파티 참가자

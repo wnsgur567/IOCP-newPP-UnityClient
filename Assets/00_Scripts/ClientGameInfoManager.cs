@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, 
+public class ClientGameInfoManager : Singleton<ClientGameInfoManager>,
     @PlayerInput.IMoveActionsActions, IPartyInOutCallback
 {
     [SerializeField] Camera player_camera;  // player 이동 따라다니는 카메라
     [SerializeField] float player_movespeed;
+    NetVector3 m_before_pos;
+    [SerializeField] float m_tolerance = 3.0f;
 
     // server 로 send 할 간격 정하기
     // 초당 몇번을 서버로 보낼 지
@@ -43,6 +45,7 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>,
     private void Awake()
     {
         player_camera = Camera.main;
+        m_before_pos = new NetVector3();
     }
 
     private void OnEnable()
@@ -70,13 +73,31 @@ public class ClientGameInfoManager : Singleton<ClientGameInfoManager>,
             interval_acc += Time.deltaTime;
             if (interval_acc > SendInterval)
             {
-                interval_acc = -SendInterval;
-                SendPlayerPos();
+                interval_acc -= SendInterval;
+                if (CheckPlayerPos())
+                    SendPlayerPos();
             }
         }
     }
 
-    public void SendPlayerPos()
+    // 이전 위치와 비교해서 일정 거리 이상 벗어났을 경우만 send 보낼 수 있도록 체크
+    private bool CheckPlayerPos()
+    {
+        float x = m_before_pos.x - m_controll_object.NetPosition.x;
+        float y = m_before_pos.y - m_controll_object.NetPosition.y;
+        float z = m_before_pos.z - m_controll_object.NetPosition.z;
+
+        m_before_pos.x = m_controll_object.NetPosition.x;
+        m_before_pos.y = m_controll_object.NetPosition.y;
+        m_before_pos.z = m_controll_object.NetPosition.z;
+
+        float distance = (float)Math.Sqrt(x * x + y * y + z * z);
+        if (distance < m_tolerance)
+            return false;
+        return true;
+    }
+
+    private void SendPlayerPos()
     {
         Net.SendPacket sendpacket = new Net.SendPacket();
         sendpacket.__Initialize();

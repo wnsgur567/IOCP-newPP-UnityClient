@@ -11,6 +11,7 @@ public class PartyPlayersGUIController :
 
     private void Awake()
     {   // 첫 시작시 비 활성화 된 상태로
+        OnExitParty();
         DeActivate();
     }
 
