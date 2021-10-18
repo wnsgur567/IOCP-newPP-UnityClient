@@ -22,6 +22,11 @@ namespace NetApp
             OnEnterPartyEvent += listner.OnEnterParty;
             OnExitPartyEvent += listner.OnExitParty;
         }
+        public void UnLinkPartyEventCallbacks(IPartyInOutCallback listner)
+        {
+            OnEnterPartyEvent -= listner.OnEnterParty;
+            OnExitPartyEvent -= listner.OnExitParty;
+        }
 
         public enum Result : UInt32
         {
@@ -165,7 +170,7 @@ namespace NetApp
             {
                 Debug.Log("ÆÄÆ¼ Å»Åð ¼º°ø");
                 // ÆÄÆ¼ Å»Åð ½Ã ÀÌº¥Æ® ÄÝ¹é
-                OnExitPartyEvent?.Invoke(); 
+                OnExitPartyEvent?.Invoke();
             }
             else
             {

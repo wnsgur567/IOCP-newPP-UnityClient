@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.InputSystem;
 
 // 파티 하나에 되한 정보
 public class PlayerPartyInfo : Net.ISerializable
@@ -55,9 +56,10 @@ public class PlayerPartyInfo : Net.ISerializable
 }
 
 // 검색 , 파티리스트 , 파티 생성 등을 총괄하는 Main GUI 컨트롤러
-public class PartySystemGUIController : Singleton<PartySystemGUIController>
+public class PartySystemGUIController : Singleton<PartySystemGUIController>,
+    IGUIAcitvationHandler, IPartyInOutCallback, @PartyKeyboardInput.IPartySystemActions
 {
-    [SerializeField] Image m_create_party_panel;
+    [SerializeField] Image m_root_panel;
 
     [SerializeField] TMPro.TMP_InputField m_inputfeild;       // 파티 검색 inputfield
     [SerializeField] Button m_search_button;        // 파티 검색 버튼
@@ -74,13 +76,47 @@ public class PartySystemGUIController : Singleton<PartySystemGUIController>
     List<PlayerPartyInfo> m_party_infos;      // server 에서 불러온 파티 infomation
     List<PlayerPartyInfo> m_searched_infos;                  // search 버튼을 눌러 검색된 파티정보 리스트
 
+    // key input
+    PartyKeyboardInput m_input_system;
+
     private void Awake()
     {
         m_party_infos = new List<PlayerPartyInfo>();
         m_searched_infos = new List<PlayerPartyInfo>();
         ClearShowList();
         LinkButtonCallback();
+        DeActivate();
     }
+
+    private void OnEnable()
+    {
+        NetApp.PartyManager.Instance.LinkPartyEventCallbacks(this);
+
+        // key input
+        if (m_input_system == null)
+            m_input_system = new PartyKeyboardInput();
+        m_input_system.PartySystem.SetCallbacks(instance: this);
+        m_input_system.PartySystem.Enable();
+    }
+
+    private void OnDisable()
+    {
+        NetApp.PartyManager.Instance.UnLinkPartyEventCallbacks(this);
+
+        // key input
+        m_input_system.PartySystem.Disable();
+    }
+
+    public void OnEnterParty(PlayerPartyInfo info)
+    {
+        m_create_button.interactable = false;
+    }
+
+    public void OnExitParty()
+    {
+        m_create_button.interactable = true;
+    }
+
 
     // 서버에서 온 정보를 셋팅
     public void SetPartyList(List<PlayerPartyInfo> infos)
@@ -93,7 +129,7 @@ public class PartySystemGUIController : Singleton<PartySystemGUIController>
     {
         m_search_button.onClick.AddListener(SearchPartyProcess);
         m_flush_button.onClick.AddListener(FlushProcess);
-        m_create_button.onClick.AddListener(CreateNewParty);
+        m_create_button.onClick.AddListener(ActivateCreateNewPartyPanel);
         m_refresh_button.onClick.AddListener(RefreshParty);
 
         // left...
@@ -167,14 +203,42 @@ public class PartySystemGUIController : Singleton<PartySystemGUIController>
     }
 
     // 파티 생성 창을 띄우기
-    private void CreateNewParty()
+    private void ActivateCreateNewPartyPanel()
     {
-        m_create_party_panel.gameObject.SetActive(true);
+        PartyCreateGUIController.Instance.Activate();
     }
 
     // 서버로부터 정보를 받아 파티 리스트를 갱신함
     private void RefreshParty()
     {
         NetApp.PartyManager.Instance.SendRequestAllPartyList();
+    }
+
+    public void Activate()
+    {
+        m_root_panel.gameObject.SetActive(true);
+    }
+
+    public void DeActivate()
+    {
+        m_root_panel.gameObject.SetActive(false);
+    }
+
+    public void OnPartySystemOnOffAction(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Debug.Log("Party Key input");
+            if (m_root_panel.gameObject.activeSelf)
+            {   // ui is activated
+                // .. do deactivate UI
+                DeActivate();
+            }
+            else
+            {   // ui is deactivated
+                // .. do activate UI
+                Activate();
+            }
+        }
     }
 }

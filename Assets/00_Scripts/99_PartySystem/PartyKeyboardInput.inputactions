@@ -1,0 +1,33 @@
+{
+    "name": "PartyKeyboardInput",
+    "maps": [
+        {
+            "name": "PartySystem",
+            "id": "5ef8f944-0f98-4500-9041-65459b5fc878",
+            "actions": [
+                {
+                    "name": "PartySystemOnOffAction",
+                    "type": "Button",
+                    "id": "b29ea6df-6402-4d42-a68a-24e5e27117da",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "129940db-d41b-49b3-97f1-3014065e004c",
+                    "path": "<Keyboard>/p",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PartySystemOnOffAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -16,13 +16,14 @@ public class PartyPlayersGUIController :
 
     private void OnEnable()
     {
-
+        NetApp.PartyManager.Instance.LinkPartyEventCallbacks(this);
     }
 
     private void OnDisable()
     {
-
+        NetApp.PartyManager.Instance.UnLinkPartyEventCallbacks(this);
     }
+
 
     public void Activate()
     {

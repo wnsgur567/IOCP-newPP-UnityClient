@@ -28,6 +28,16 @@ public class PartyCreateGUIController :
         DeActivate();
     }
 
+    private void OnEnable()
+    {
+        NetApp.PartyManager.Instance.LinkPartyEventCallbacks(this);
+    }
+
+    private void OnDisable()
+    {
+        NetApp.PartyManager.Instance.UnLinkPartyEventCallbacks(this);
+    }
+
     public void Flush()
     {
         m_inputfield.text = "";

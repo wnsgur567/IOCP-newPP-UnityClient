@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, @PlayerInput.IMoveActionsActions, IPartyInOutCallback
+public class ClientGameInfoManager : Singleton<ClientGameInfoManager>, 
+    @PlayerInput.IMoveActionsActions, IPartyInOutCallback
 {
     [SerializeField] Camera player_camera;  // player 이동 따라다니는 카메라
     [SerializeField] float player_movespeed;

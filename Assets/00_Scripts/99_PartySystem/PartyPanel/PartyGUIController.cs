@@ -8,7 +8,8 @@ using UnityEngine.UI;
 // 현재 파티의 이름과 파티원 4명의 대한 정보를 표시함
 // 파티 신청 버튼(플레이어가 파티 미 가입 시)
 // 파티 탈퇴 버튼(플레이어가 파티 가입된 상태일 시)
-public class PartyGUIController : Singleton<PartyGUIController>, IGUIAcitvationHandler, IPartyInOutCallback
+public class PartyGUIController : Singleton<PartyGUIController>,
+    IGUIAcitvationHandler, IPartyInOutCallback
 {
     [SerializeField] Image m_root_panel;
 
@@ -31,6 +32,15 @@ public class PartyGUIController : Singleton<PartyGUIController>, IGUIAcitvationH
         m_exit_button.onClick.AddListener(__OnExitButtonClicked);
 
         DeActivate();
+    }
+
+    private void OnEnable()
+    {
+        NetApp.PartyManager.Instance.LinkPartyEventCallbacks(this);
+    }
+    private void OnDisable()
+    {
+        NetApp.PartyManager.Instance.UnLinkPartyEventCallbacks(this);
     }
 
     // 파티 시스템에서 선택한 slot의 파티정보에 따라 GUI를 갱신합니다
@@ -83,13 +93,18 @@ public class PartyGUIController : Singleton<PartyGUIController>, IGUIAcitvationH
     {
         // 파티 신청 버튼 비 활성화
         m_request_button.interactable = false;
+        // 파티 탚퇴 버튼 활성화
+        m_exit_button.interactable = true;
     }
     // 플레이어가 파티 탈퇴 시 업데이트 할 것들
     public void OnExitParty()
     {
         // 파티 신청 버튼 활성화
         m_request_button.interactable = true;
+        // 파티 탈퇴 버튼 비활성화
+        m_exit_button.interactable = false;
+        DeActivate();
     }
-    
+
 
 }

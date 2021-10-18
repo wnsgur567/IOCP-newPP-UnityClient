@@ -2988,7 +2988,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flag: 1
-  m_create_party_panel: {fileID: 1831592460}
+  m_root_panel: {fileID: 423236591}
   m_inputfeild: {fileID: 1487764282}
   m_search_button: {fileID: 305432666}
   m_flush_button: {fileID: 2065144000}
@@ -13878,7 +13878,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 170, y: -23.33375}
+  m_AnchoredPosition: {x: 170, y: -23.333748}
   m_SizeDelta: {x: 330, y: 36.6675}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1118037085
@@ -14132,7 +14132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a4f2efa75ce864cb79162aab2d35bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flag: 0
+  flag: 1
   m_root_panel: {fileID: 1831592460}
   m_inputfield: {fileID: 1837970367}
   m_maxPlayerCount_dropdown: {fileID: 1843039798}
@@ -24643,6 +24643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flag: 1
+  m_root_panel: {fileID: 109055682}
   m_character_image: {fileID: 168965391}
   m_name_tmpro: {fileID: 239629976}
   m_characterType_tmpro: {fileID: 337641907}
