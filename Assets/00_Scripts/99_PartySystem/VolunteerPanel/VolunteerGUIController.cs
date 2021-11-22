@@ -74,24 +74,26 @@ public class VolunteerGUIController : Singleton<VolunteerGUIController>
     // 현재 Volunteer를 거부
     public void __OnAcceptButtonClicked()
     {
+        NetApp.PartyManager.Instance.SendAcceptRequest(m_current_volunteer.Value);
+
         var n = m_current_volunteer.Next;
         m_volunteer_list.Remove(m_current_volunteer);
         m_current_volunteer = n;
         OnVolunteerInfoChanged();
-
-        // TODO : Send process to server
+        
     }
 
     // Reject button 클릭 시
     // 현재 Volunteer를 수락
     public void __OnRejectButtonClicked()
-    {
+    {        
+        NetApp.PartyManager.Instance.SendRejectRequest(m_current_volunteer.Value);
+
         var n = m_current_volunteer.Next;
         m_volunteer_list.Remove(m_current_volunteer);
         m_current_volunteer = n;
         OnVolunteerInfoChanged();
 
-        // TODO : Send process to server
     }
 
     // current 가 갱신되는 경우

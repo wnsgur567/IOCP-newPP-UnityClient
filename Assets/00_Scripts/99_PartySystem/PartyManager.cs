@@ -154,6 +154,9 @@ namespace NetApp
                     case Net.VillageState.Protocol.RequestParticipate:
                         RequestParticipateProcess(party_data.result, party_data.recvPacket);
                         break;
+                    case Net.VillageState.Protocol.RequestReply:
+
+                        break;
                     case Net.VillageState.Protocol.NewParticipant:
                         NewParticipantProcess(party_data.result, party_data.recvPacket);
                         break;
@@ -208,14 +211,19 @@ namespace NetApp
 
                     // 신청인 정보를 추가
                     VolunteerGUIController.Instance.NewVolunteer(playerinfo);
+                    break;               
+            }
+        }
 
-                    break;
-                // 파티 신청이 파티장에 의해 수락됨
-                case Result.RequestAccept:
-                    break;
-                // 파티 신청이 파티장에 의해 거부됨
-                case Result.RequestReject:
-                    break;
+        private void ReplyRequestProcess(Result result, Net.RecvPacket packet)
+        {
+            if(result == Result.RequestAccept)
+            {   // 파티 신청이 파티장에 의해 수락됨
+
+            }
+            else if (result == Result.RequestReject)
+            {   // 파티 신청이 파티장에 의해 거부됨
+
             }
         }
 
